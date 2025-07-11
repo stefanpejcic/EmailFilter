@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+aiodns
+dnspython
+python-whois
+pydantic
+sqlite-utils
