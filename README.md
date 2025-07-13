@@ -64,7 +64,7 @@ This guide shows how to configure Exim to use emailfilter to verify outgoing ema
 - emailfilter already running locally (default on http://localhost:8000)
 - Internet access from the machine (for DNS & MX lookups).
 
-## 🔧 1: Custom Router for Exim
+### 🔧 1: Custom Router for Exim
 
 Add a router in Exim to call `emailfilter` before proceeding with delivery.
 
@@ -82,9 +82,9 @@ This uses a small helper script to call `emailfilter`, and if the result is bad 
 
 ---
 
-## 🧾 2: Copy `emailfilter-check` script
+### 🧾 2: Copy `emailfilter-check` script
 
-Copy `scripts/emailfilter-check.sh` to the Exim server a at `/usr/local/bin/emailfilter-check.sh`, and make it executable:
+Copy `scripts/emailfilter-check.sh` to the Exim server at `/usr/local/bin/emailfilter-check.sh`, and make it executable:
 
 ```bash
 chmod +x /usr/local/bin/emailfilter-check.sh
@@ -92,7 +92,7 @@ chmod +x /usr/local/bin/emailfilter-check.sh
 
 ---
 
-## 🧪 3: Test the Integration
+### 🧪 3: Test the Integration
 
 Run a test email and observe logs:
 
@@ -121,4 +121,71 @@ data = :fail: Email rejected by emailfilter verification.
 
 ---
 
-## 
+## 📥 Exim Incoming Email Filtering
+
+Here is how to configure Exim to call `emailfilter` during the **RCPT** stage to check the **sender's email address** and reject bad ones before accepting delivery:
+
+
+**🧱 Prerequisites:**
+
+* Exim running as an SMTP server (receiving mail).
+* `emailfilter` running on `http://localhost:8000`.
+* Exim compiled with support for `ACLs`.
+
+---
+
+### 🔧 1: ACL to use *emailfilter*
+
+Edit your Exim configuration (typically in `/etc/exim4/exim4.conf.template` or split config files under `/etc/exim4/conf.d/`):
+
+Find the ACL section called `acl_check_rcpt` (this is where recipient validation and spam checks happen) and add the following block **near the top**:
+
+```exim
+  # Check sender address using emailfilter
+  warn
+    set acl_m0 = ${run{/usr/local/bin/emailfilter-check.sh $sender_address}{$value}fail}
+
+  deny
+    condition = ${if eq{$acl_m0}{} {yes}{no}}
+    message = Sender address <$sender_address> rejected by emailfilter verification.
+```
+
+---
+
+### 🧾 2: Copy `emailfilter-check` script
+
+Copy `scripts/emailfilter-check.sh` to the Exim server at `/usr/local/bin/emailfilter-check.sh`, and make it executable:
+
+```bash
+chmod +x /usr/local/bin/emailfilter-check.sh
+```
+
+---
+
+### 🧪 3: Test the Integration
+
+Use `telnet`, `swaks`, or just send test emails from a mail client. You should see messages like:
+
+```
+550 Sender address <some@disposablemail.com> rejected by emailfilter verification.
+```
+
+And in logs:
+
+```
+Sender rejected by acl_check_rcpt: emailfilter
+```
+
+---
+
+### 🧰 Optional: Only Filter External Senders
+
+To skip verification for trusted internal senders, you can wrap the check:
+
+```exim
+  warn
+    condition = ${if !match{$sender_host_address}{^192\.168\.|^10\.} {yes}{no}}
+    set acl_m0 = ${run{/usr/local/bin/emailfilter-check $sender_address}{$value}fail}
+```
+
+---
