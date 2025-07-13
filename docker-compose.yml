@@ -3,9 +3,6 @@ services:
     build: .
     ports:
       - "8000:8000"
-    environment:
-      # Add any environment variables your app needs here
-      # EXAMPLE_VAR: "value"
     volumes:
       - ./:/app
       - /etc/localtime:/etc/localtime:ro
