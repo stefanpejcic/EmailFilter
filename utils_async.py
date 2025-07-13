@@ -39,13 +39,26 @@ async def is_new_domain(domain: str, threshold_days=30) -> bool:
         try:
             data = whois.whois(domain)
             created = data.creation_date
+            
+            if not created:
+                return True
+
             if isinstance(created, list):
                 created = created[0]
-            if created and isinstance(created, datetime):
-                return (datetime.now() - created).days < threshold_days
-        except:
+
+            if isinstance(created, datetime):
+                created_date = created
+            else:
+                try:
+                    created_date = datetime.strptime(str(created), '%Y-%m-%d')
+                except Exception:
+                    return True
+
+            age_days = (datetime.now() - created_date).days
+            return age_days < threshold_days
+        except Exception as e:
+            print(f"Exception in whois lookup: {e}")
             return True
-        return False
     return await asyncio.get_event_loop().run_in_executor(executor, inner)
 
 def is_disposable(domain: str) -> bool:
