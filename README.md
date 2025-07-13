@@ -55,9 +55,9 @@ wget -O lists/disposable_domains.txt https://disposable.github.io/disposable-ema
 # Use-cases:
 Below you can find examples on how to setup Exim or Proxmox to use the emailfilter:
 
-- 📤 Exim Outgoing Email Verification
-- 📥 Exim Incoming Email Filtering
-- 🚧 Proxmox Mail Gateway Incoming Email Filtering
+- [📤 Exim Outgoing Email Verification](#-exim-incoming-email-filtering)
+- [📥 Exim Incoming Email Filtering](#-exim-incoming-email-filtering)
+- [🚧 Proxmox Mail Gateway Incoming Email Filtering](#-proxmox-mail-gateway-incoming-email-filtering)
 
 
 ## 📤 Exim Outgoing Email Verification
