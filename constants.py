@@ -1,8 +1,41 @@
-def load_list_from_file(filename: str) -> set:
-    with open(filename, 'r') as f:
-        return set(line.strip() for line in f if line.strip())
+from pathlib import Path
 
-DISPOSABLE_DOMAINS = load_list_from_file('lists/disposable_domains.txt')
-BLACKLISTED_DOMAINS = load_list_from_file('lists/blacklisted_domains.txt')
-WHITELISTED_DOMAINS = load_list_from_file('lists/whitelisted_domains.txt')
-SPAM_KEYWORDS = load_list_from_file('lists/spam_keywords.txt')
+BASE_DIR = Path("lists")
+
+LIST_FILES = {
+    "whitelist": BASE_DIR / "whitelisted_domains.txt",
+    "blacklist": BASE_DIR / "blacklisted_domains.txt",
+    "disposable": BASE_DIR / "disposable_domains.txt",
+    "spam_keywords": BASE_DIR / "spam_keywords.txt",
+}
+
+_loaded_sets = {}
+
+def load_list(name: str) -> set:
+    """Lazy-loads and returns a cached set from a list file."""
+    if name not in LIST_FILES:
+        raise ValueError(f"List '{name}' not found.")
+    if name not in _loaded_sets:
+        path = LIST_FILES[name]
+        with path.open('r') as f:
+            _loaded_sets[name] = set(line.strip() for line in f if line.strip())
+    return _loaded_sets[name]
+
+def save_list(name: str):
+    """Writes the updated set to its respective file."""
+    if name not in LIST_FILES or name not in _loaded_sets:
+        raise ValueError(f"List '{name}' not loaded or recognized.")
+    path = LIST_FILES[name]
+    with path.open('w') as f:
+        for item in sorted(_loaded_sets[name]):
+            f.write(item + "\n")
+
+def add_to_list(name: str, item: str):
+    s = load_list(name)
+    s.add(item.strip().lower())
+    save_list(name)
+
+def remove_from_list(name: str, item: str):
+    s = load_list(name)
+    s.discard(item.strip().lower())
+    save_list(name)
