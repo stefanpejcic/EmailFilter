@@ -23,3 +23,8 @@ curl -X POST "http://localhost:8000/feedback/spam" \
      -H "Content-Type: application/json" \
      -d '{"email": "user@example.com"}'
 ```
+
+- Update disposable domains list:
+```
+wget -O lists/disposable_domains.txt https://disposable.github.io/disposable-email-domains/domains.txt
+```
