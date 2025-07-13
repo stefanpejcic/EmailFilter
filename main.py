@@ -4,6 +4,8 @@ from database import *
 from utils_async import *
 import asyncio
 
+from constants import load_list, add_to_list, remove_from_list
+
 init_db()
 app = FastAPI()
 
@@ -65,4 +67,36 @@ async def report_spam(data: FeedbackInput):
     domain = data.email.split("@")[1].lower()
     mark_domain_as_spam(domain)
     return {"message": f"Domain {domain} marked as spam. Thank you!"}
-  
+
+@app.post("/whitelist")
+def add_whitelist(domain: str = Query(...)):
+    domain = domain.lower()
+    if domain in load_list("whitelist"):
+        raise HTTPException(status_code=400, detail="Domain already whitelisted.")
+    add_to_list("whitelist", domain)
+    return {"message": f"{domain} added to whitelist."}
+
+@app.delete("/whitelist")
+def delete_whitelist(domain: str = Query(...)):
+    domain = domain.lower()
+    if domain not in load_list("whitelist"):
+        raise HTTPException(status_code=404, detail="Domain not in whitelist.")
+    remove_from_list("whitelist", domain)
+    return {"message": f"{domain} removed from whitelist."}
+
+@app.post("/blacklist")
+def add_blacklist(domain: str = Query(...)):
+    domain = domain.lower()
+    if domain in load_list("blacklist"):
+        raise HTTPException(status_code=400, detail="Domain already blacklisted.")
+    add_to_list("blacklist", domain)
+    return {"message": f"{domain} added to blacklist."}
+
+@app.delete("/blacklist")
+def delete_blacklist(domain: str = Query(...)):
+    domain = domain.lower()
+    if domain not in load_list("blacklist"):
+        raise HTTPException(status_code=404, detail="Domain not in blacklist.")
+    remove_from_list("blacklist", domain)
+    return {"message": f"{domain} removed from blacklist."}
+
