@@ -52,7 +52,13 @@ curl -X POST "http://localhost:8000/feedback/spam" \
 wget -O lists/disposable_domains.txt https://disposable.github.io/disposable-email-domains/domains.txt
 ```
 
-# Production use-cased
+# Use-cases:
+Below you can find examples on how to setup Exim or Proxmox to use the emailfilter:
+
+- 📤 Exim Outgoing Email Verification
+- 📥 Exim Incoming Email Filtering
+- 🚧 Proxmox Mail Gateway Incoming Email Filtering
+
 
 ## 📤 Exim Outgoing Email Verification
 
@@ -189,3 +195,37 @@ To skip verification for trusted internal senders, you can wrap the check:
 ```
 
 ---
+
+## 🚧 Proxmox Mail Gateway Incoming Email Filtering
+
+Here is how to integrate *emailfilter* with **Proxmox Mail Gateway (PMG)** to filter incoming emails based on sender address validation using the emailfilter service:
+
+**🧱 Prerequisites:**
+- Proxmox Mail Gateway 7.x or newer installed and configured.
+- emailfilter service running locally and accessible on http://localhost:8000.
+- Root or administrative access to your Proxmox Mail Gateway.
+
+### 🧾 1: Copy `pmg-emailfilter-milter.sh` script
+
+Copy `scripts/pmg-emailfilter-milter.sh` to the Exim server at `/usr/local/bin/pmg-emailfilter-milter.sh`, and make it executable:
+
+```bash
+chmod +x /usr/local/bin/pmg-emailfilter-milter.sh
+```
+
+----
+
+### 🔧 2: Configure PMG to use the script
+
+Edit the PMG configuration to add this script as a Milter:
+
+- Go to `/etc/postfix/main.cf` on the PMG server.
+- Add or modify the `smtpd_milters` parameter to include the script via `milter-regex` or use `milter-greylis` or a generic milter handler depending on your setup.
+- Restart postfix: `systemctl restart postfix`
+
+### 🧪 3: Test the Integration
+
+Try sending emails from addresses that are invalid or disposable and verify that PMG rejects them with a 550 error referencing emailfilter.
+
+Check `/var/log/mail.log` or PMG logs for rejection messages.
+
