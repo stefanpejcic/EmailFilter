@@ -70,7 +70,7 @@ This guide shows how to configure Exim to use emailfilter to verify outgoing ema
 - emailfilter already running locally (default on http://localhost:8000)
 - Internet access from the machine (for DNS & MX lookups).
 
-### 🔧 1: Custom Router for Exim
+### 🔧 1: Create custom router for Exim
 
 Add a router in Exim to call `emailfilter` before proceeding with delivery.
 
@@ -88,7 +88,7 @@ This uses a small helper script to call `emailfilter`, and if the result is bad 
 
 ---
 
-### 🧾 2: Copy `emailfilter-check` script
+### 🧾 2: Copy `emailfilter-check.sh` script
 
 Copy `scripts/emailfilter-check.sh` to the Exim server at `/usr/local/bin/emailfilter-check.sh`, and make it executable:
 
@@ -98,7 +98,7 @@ chmod +x /usr/local/bin/emailfilter-check.sh
 
 ---
 
-### 🧪 3: Test the Integration
+### 🧪 3: Test
 
 Run a test email and observe logs:
 
@@ -140,7 +140,7 @@ Here is how to configure Exim to call `emailfilter` during the **RCPT** stage to
 
 ---
 
-### 🔧 1: ACL to use *emailfilter*
+### 🔧 1: Create ACL to use *emailfilter*
 
 Edit your Exim configuration (typically in `/etc/exim4/exim4.conf.template` or split config files under `/etc/exim4/conf.d/`):
 
@@ -158,7 +158,7 @@ Find the ACL section called `acl_check_rcpt` (this is where recipient validation
 
 ---
 
-### 🧾 2: Copy `emailfilter-check` script
+### 🧾 2: Copy `emailfilter-check.sh` script
 
 Copy `scripts/emailfilter-check.sh` to the Exim server at `/usr/local/bin/emailfilter-check.sh`, and make it executable:
 
@@ -168,7 +168,7 @@ chmod +x /usr/local/bin/emailfilter-check.sh
 
 ---
 
-### 🧪 3: Test the Integration
+### 🧪 3: Test
 
 Use `telnet`, `swaks`, or just send test emails from a mail client. You should see messages like:
 
@@ -213,9 +213,9 @@ Copy `scripts/pmg-emailfilter-milter.sh` to the Exim server at `/usr/local/bin/p
 chmod +x /usr/local/bin/pmg-emailfilter-milter.sh
 ```
 
-----
+---
 
-### 🔧 2: Configure PMG to use the script
+### 🔧 2: Configure PMG to use it
 
 Edit the PMG configuration to add this script as a Milter:
 
@@ -223,7 +223,9 @@ Edit the PMG configuration to add this script as a Milter:
 - Add or modify the `smtpd_milters` parameter to include the script via `milter-regex` or use `milter-greylis` or a generic milter handler depending on your setup.
 - Restart postfix: `systemctl restart postfix`
 
-### 🧪 3: Test the Integration
+---
+
+### 🧪 3: Test
 
 Try sending emails from addresses that are invalid or disposable and verify that PMG rejects them with a 550 error referencing emailfilter.
 
