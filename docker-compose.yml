@@ -1,0 +1,18 @@
+services:
+  emailfilter:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      # Add any environment variables your app needs here
+      # EXAMPLE_VAR: "value"
+    volumes:
+      - ./:/app
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro      
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 1g
+    cpus: 1.0
+    pids_limit: 50
