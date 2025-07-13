@@ -1,0 +1,7 @@
+lottery
+prize
+cash
+offer
+winner
+free
+gift
