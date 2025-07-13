@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Query
 from models import EmailInput, FeedbackInput
 from database import *
 from utils_async import *
