@@ -100,3 +100,29 @@ def delete_blacklist(domain: str = Query(...)):
     remove_from_list("blacklist", domain)
     return {"message": f"{domain} removed from blacklist."}
 
+@app.get("/lists/{list_name}")
+def get_list(list_name: str = Path(..., description="Name of the list to retrieve")):
+    list_name = list_name.lower()
+    if list_name not in LIST_FILES:
+        raise HTTPException(status_code=404, detail="List not found.")
+    
+    try:
+        return {
+            "list": list_name,
+            "items": sorted(load_list(list_name))
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to load list: {str(e)}")
+
+# SLOW
+@app.get("/lists")
+def get_all_lists():
+    result = {}
+    for name in LIST_FILES:
+        try:
+            result[name] = sorted(load_list(name))
+        except Exception as e:
+            result[name] = f"Error: {str(e)}"
+    return result
+
+
