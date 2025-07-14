@@ -285,3 +285,8 @@ curl: (52) Empty reply from server
 ```
 
 Application did not start correctly - check the logs: `docker logs -f emailfilter`
+
+# Todo
+
+- routes to dispaly doamins penalty and checked domains
+- 
