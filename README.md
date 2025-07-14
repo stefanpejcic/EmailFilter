@@ -63,6 +63,33 @@ curl -X POST "http://localhost:8000/feedback/spam" \
      -d '{"email": "user@example.com"}'
 ```
 
+- List scores:
+```
+curl -X GET "http://localhost:8000/scores"
+```
+
+- Update scores:
+```
+curl -X POST http://localhost:8000/scores \
+  -H "Content-Type: application/json" \
+  -d '{
+    "base": 40,
+    "mx_exists": 25,
+    "new_domain": -10,
+    "smtp_valid": 15,
+    "disposable": -25,
+    "blacklisted": -50
+    "whitelisted": 50,
+    "spam_keywords": -40
+  }'
+```
+
+- Restore default scores:
+```
+curl -X POST http://localhost:8000/scores/default
+```
+
+
 - Update disposable domains list:
 ```
 wget -O lists/disposable_domains.txt https://disposable.github.io/disposable-email-domains/domains.txt
