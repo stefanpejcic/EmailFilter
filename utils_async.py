@@ -15,6 +15,11 @@ BLACKLISTED_DOMAINS = load_list("blacklist")
 DISPOSABLE_DOMAINS = load_list("disposable")
 SPAM_KEYWORDS = load_list("spam_keywords")
 
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 async def check_mx(domain: str) -> bool:
     try:
         await resolver.query(domain, 'MX')
@@ -39,22 +44,23 @@ async def smtp_check(email: str) -> bool:
             return False
     return await asyncio.get_event_loop().run_in_executor(executor, inner)
 
+
 async def is_new_domain(domain: str, threshold_days=30) -> bool:
     def inner():
         try:
             data = whois.whois(domain)
-            print(f"[WHOIS Raw Data] {data}")
+            logger.info(f"[WHOIS Raw Data] {data}")
 
             created = data.creation_date
-            print(f"[Parsed Creation Date] {created}")
+            logger.info(f"[Parsed Creation Date] {created}")
 
             if not created:
-                print("No creation date found.")
+                logger.warning("No creation date found.")
                 return True
 
             if isinstance(created, list):
                 created = created[0]
-                print(f"[Using First Date from List] {created}")
+                logger.info(f"[Using First Date from List] {created}")
 
             if isinstance(created, datetime):
                 created_date = created
@@ -62,15 +68,15 @@ async def is_new_domain(domain: str, threshold_days=30) -> bool:
                 try:
                     created_date = datetime.strptime(str(created), '%Y-%m-%d')
                 except Exception as e:
-                    print(f"Failed to parse creation date: {created} | Error: {e}")
+                    logger.error(f"Failed to parse creation date: {created} | Error: {e}")
                     return True
 
             age_days = (datetime.now() - created_date).days
-            print(f"[Domain Age Days] {age_days}")
+            logger.info(f"[Domain Age Days] {age_days}")
             return age_days < threshold_days
 
         except Exception as e:
-            print(f"[WHOIS Exception] {e}")
+            logger.error(f"[WHOIS Exception] {e}")
             return True
 
     return await asyncio.get_event_loop().run_in_executor(executor, inner)
