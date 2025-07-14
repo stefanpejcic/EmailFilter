@@ -73,6 +73,8 @@ def add_whitelist(domain: str = Query(...)):
     domain = domain.lower()
     if domain in load_list("whitelist"):
         raise HTTPException(status_code=400, detail="Domain already whitelisted.")
+    if domain in load_list("blacklist"):
+        raise HTTPException(status_code=400, detail="Domain is blacklisted. Remove it before adding to whitelist.")
     add_to_list("whitelist", domain)
     return {"message": f"{domain} added to whitelist."}
 
@@ -89,6 +91,8 @@ def add_blacklist(domain: str = Query(...)):
     domain = domain.lower()
     if domain in load_list("blacklist"):
         raise HTTPException(status_code=400, detail="Domain already blacklisted.")
+    if domain in load_list("whitelist"):
+        raise HTTPException(status_code=400, detail="Domain is whitelisted. Remove it before adding to blacklist.")
     add_to_list("blacklist", domain)
     return {"message": f"{domain} added to blacklist."}
 
@@ -121,8 +125,14 @@ def get_all_lists():
     for name in LIST_FILES:
         try:
             result[name] = sorted(load_list(name))
-        except Exception as e:
-            result[name] = f"Error: {str(e)}"
+        except Exception:
+            continue  # skip silently
     return result
 
-
+@app.delete("/lists/{list_name}/clear")
+def clear_list(list_name: str):
+    if list_name not in LIST_FILES:
+        raise HTTPException(status_code=404, detail="List not found.")
+    _loaded_sets[list_name] = set()
+    save_list(list_name)
+    return {"message": f"{list_name} cleared."}
