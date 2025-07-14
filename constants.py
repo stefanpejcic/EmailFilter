@@ -31,9 +31,17 @@ def save_list(name: str):
             f.write(item + "\n")
 
 def add_to_list(name: str, item: str):
+    item = item.strip().lower()
+    opposite = "blacklist" if name == "whitelist" else "whitelist"
+    opp_list = load_list(opposite)
+    if item in opp_list:
+        opp_list.remove(item)
+        save_list(opposite)
     s = load_list(name)
-    s.add(item.strip().lower())
+    s.add(item)
     save_list(name)
+
+
 
 def remove_from_list(name: str, item: str):
     s = load_list(name)
