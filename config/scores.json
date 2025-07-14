@@ -4,7 +4,7 @@
     "new_domain": -10,
     "smtp_valid": 15,
     "disposable": -25,
-    "blacklisted": -50
+    "blacklisted": -50,
     "whitelisted": 50,
     "spam_keywords": -40
 }
