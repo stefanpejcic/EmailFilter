@@ -24,7 +24,9 @@ DEFAULT_SCORES = {
     "spam_keywords": -20,
 }
 
-def load_scores(config_path: PathLib = PathLib("config/scores.json")) -> dict:
+CONFIG_SCORES_PATH = PathLib("config/scores.json")
+
+def load_scores(config_path: PathLib = CONFIG_SCORES_PATH) -> dict:
     if config_path.is_file():
         try:
             with config_path.open("r") as f:
@@ -39,6 +41,7 @@ def load_scores(config_path: PathLib = PathLib("config/scores.json")) -> dict:
         logger.info(f"No custom scores config found at {config_path}, using defaults.")
     return DEFAULT_SCORES.copy()
 
+# on startup
 SCORES = load_scores()
 
 @app.post("/filter-email")
@@ -213,3 +216,62 @@ def clear_list(list_name: str):
     save_list(list_name)
     logger.info(f"List cleared: {list_name}")
     return {"message": f"{list_name} cleared."}
+
+
+
+@app.get("/scores")
+def get_scores():
+    """
+    Get the current scoring weights (defaults + user overrides).
+    """
+    return {"scores": SCORES, "note": "To update scores POST new values to /scores and restart the application."}
+
+
+@app.post("/scores")
+def update_scores(new_scores: dict = Body(..., example=DEFAULT_SCORES)):
+    """
+    Update the scoring weights by writing to config/scores.json.
+    App restart is required to apply changes.
+    """
+    try:
+        # only allow keys from DEFAULT_SCORES
+        for key in new_scores.keys():
+            if key not in DEFAULT_SCORES:
+                raise HTTPException(status_code=400, detail=f"Invalid score key: {key}")
+
+        CONFIG_SCORES_PATH.parent.mkdir(parents=True, exist_ok=True)
+        with CONFIG_SCORES_PATH.open("w") as f:
+            json.dump(new_scores, f, indent=4)
+
+        logger.info(f"User updated scores saved to {CONFIG_SCORES_PATH}. App restart required to apply changes.")
+
+        return {
+            "message": "Scores updated successfully. Please restart the application to apply changes.",
+            "new_scores": new_scores,
+        }
+    except Exception as e:
+        logger.error(f"Failed to update scores: {e}")
+        raise HTTPException(status_code=500, detail="Failed to update scores.")
+
+@app.post("/scores/default")
+def restore_default_scores():
+    """
+    Restore the scoring weights to the default values by overwriting config/scores.json.
+    Application restart is required to apply changes.
+    """
+    try:
+        CONFIG_SCORES_PATH.parent.mkdir(parents=True, exist_ok=True)  # ensure config dir exists
+        with CONFIG_SCORES_PATH.open("w") as f:
+            json.dump(DEFAULT_SCORES, f, indent=4)
+
+        logger.info(f"Scores restored to default and saved to {CONFIG_SCORES_PATH}. App restart required to apply changes.")
+
+        return {
+            "message": "Scores restored to default. Please restart the application to apply changes.",
+            "default_scores": DEFAULT_SCORES,
+        }
+    except Exception as e:
+        logger.error(f"Failed to restore default scores: {e}")
+        raise HTTPException(status_code=500, detail="Failed to restore default scores.")
+
+
