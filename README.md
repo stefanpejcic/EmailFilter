@@ -150,11 +150,7 @@ sendmail test@example.com
 ```
 
 * Check `/var/log/exim4/mainlog`
-* You should see lines like:
-
-  ```
-  R: emailfilter_verify for test@example.com
-  ```
+* You should see lines like: `R: emailfilter_verify for test@example.com`
 
 If the email fails verification, it should be dropped or logged as rejected.
 
@@ -213,17 +209,9 @@ chmod +x /usr/local/bin/emailfilter-check.sh
 
 ### 🧪 3: Test
 
-Use `telnet`, `swaks`, or just send test emails from a mail client. You should see messages like:
+Use `telnet`, `swaks`, or just send test emails from a mail client. You should see messages like: `550 Sender address <some@disposablemail.com> rejected by emailfilter verification.`
 
-```
-550 Sender address <some@disposablemail.com> rejected by emailfilter verification.
-```
-
-And in logs:
-
-```
-Sender rejected by acl_check_rcpt: emailfilter
-```
+And in logs: `Sender rejected by acl_check_rcpt: emailfilter`
 
 ---
 
