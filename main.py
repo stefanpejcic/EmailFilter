@@ -5,11 +5,41 @@ from src.utils_async import *
 import asyncio
 from src.constants import load_list, add_to_list, remove_from_list
 from src.logger_config import get_logger
+from pathlib import Path as PathLib
 
 logger = get_logger(__name__)
 
 init_db()
 app = FastAPI()
+
+
+DEFAULT_SCORES = {
+    "base": 50,
+    "mx_exists": 20,
+    "smtp_valid": 20,
+    "whitelisted": 10,
+    "new_domain": -10,
+    "disposable": -30,
+    "blacklisted": -40,
+    "spam_keywords": -20,
+}
+
+def load_scores(config_path: PathLib = PathLib("config/scores.json")) -> dict:
+    if config_path.is_file():
+        try:
+            with config_path.open("r") as f:
+                user_scores = json.load(f)
+            merged = DEFAULT_SCORES.copy()
+            merged.update(user_scores)
+            logger.info(f"Loaded custom scores from {config_path}")
+            return merged
+        except Exception as e:
+            logger.error(f"Failed to load scores config: {e}")
+    else:
+        logger.info(f"No custom scores config found at {config_path}, using defaults.")
+    return DEFAULT_SCORES.copy()
+
+SCORES = load_scores()
 
 @app.post("/filter-email")
 async def filter_email(data: EmailInput):
@@ -39,21 +69,21 @@ async def filter_email(data: EmailInput):
         rep_penalty = get_reputation_penalty(domain)
 
         # Calculate score
-        score = 50
+        score = SCORES["base"]
         if mx_exists:
-            score += 20
+            score += SCORES["mx_exists"]
         if smtp_valid:
-            score += 20
+            score += SCORES["smtp_valid"]
         if whitelisted:
-            score += 10
+            score += SCORES["whitelisted"]
         if new_domain:
-            score -= 10
+            score += SCORES["new_domain"]
         if disposable:
-            score -= 30
+            score += SCORES["disposable"]
         if blacklisted:
-            score -= 40
+            score += SCORES["blacklisted"]
         if spam_keywords:
-            score -= 20
+            score += SCORES["spam_keywords"]
         score += rep_penalty
         score = max(0, min(100, score))
 
