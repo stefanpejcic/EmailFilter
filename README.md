@@ -247,3 +247,15 @@ Try sending emails from addresses that are invalid or disposable and verify that
 
 Check `/var/log/mail.log` or PMG logs for rejection messages.
 
+---
+
+# Troubleshooting
+
+
+```
+ERROR:utils_async:[WHOIS Exception] [Errno 111] Connection refused
+```
+
+means that outgoing connection via port `43` to whois servers is not working. Make sure TCP_OUT port `43` is opened on firewall, test using: `telnet whois.verisign-grs.com 43`
+
+
