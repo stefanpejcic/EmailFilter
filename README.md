@@ -40,6 +40,22 @@ curl -X POST "http://localhost:8000/blacklist?domain=example.com"
 curl -X DELETE "http://localhost:8000/blacklist?domain=example.com"
 ```
 
+
+- View all lists:
+```
+curl -X GET "http://localhost:8000/lists"
+```
+
+- View a specific list:
+```
+curl -X GET "http://localhost:8000/lists/<whitelist|blacklist|disposable|spam_keywords>"
+```
+
+- Delete a specific list:
+```
+curl -X DELETE "http://localhost:8000/lists/<whitelist|blacklist|disposable|spam_keywords>"
+```
+
 - Report as spam:
 ```
 curl -X POST "http://localhost:8000/feedback/spam" \
