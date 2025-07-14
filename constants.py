@@ -1,6 +1,6 @@
-from pathlib import Path
+from pathlib import Path as PathLib  # 👈 alias pathlib
 
-BASE_DIR = Path("lists")
+BASE_DIR = PathLib("lists")
 
 LIST_FILES = {
     "whitelist": BASE_DIR / "whitelisted_domains.txt",
