@@ -3,7 +3,7 @@ from src.models import EmailInput, FeedbackInput
 from src.database import *
 from src.utils_async import *
 import asyncio
-from constants import load_list, add_to_list, remove_from_list
+from src.constants import load_list, add_to_list, remove_from_list
 from src.logger_config import get_logger
 
 logger = get_logger(__name__)
