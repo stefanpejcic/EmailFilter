@@ -10,6 +10,11 @@ from constants import *
 resolver = aiodns.DNSResolver()
 executor = ThreadPoolExecutor()
 
+WHITELISTED_DOMAINS = load_list("whitelist")
+BLACKLISTED_DOMAINS = load_list("blacklist")
+DISPOSABLE_DOMAINS = load_list("disposable")
+SPAM_KEYWORDS = load_list("spam_keywords")
+
 async def check_mx(domain: str) -> bool:
     try:
         await resolver.query(domain, 'MX')
