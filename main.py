@@ -1,5 +1,6 @@
 import json
 from fastapi import FastAPI, HTTPException, Query, Path, Body
+from starlette.middleware.proxyheaders import ProxyHeadersMiddleware
 from src.models import EmailInput, FeedbackInput
 from src.database import *
 from src.utils_async import *
@@ -12,6 +13,10 @@ logger = get_logger(__name__)
 
 init_db()
 app = FastAPI()
+
+# respect X-Forwarded-For and X-Forwarded-Proto headers
+app.add_middleware(ProxyHeadersMiddleware, trusted_hosts="*")
+
 
 BANNER = r"""
                            _ _  __ _ _ _            
