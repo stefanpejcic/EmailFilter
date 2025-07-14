@@ -112,13 +112,13 @@ Below you can find examples on how to setup Exim or Proxmox to use the emailfilt
 
 This guide shows how to configure Exim to use emailfilter to verify outgoing emails before delivery. This helps reduce bounces, avoid spam traps, and improve delivery hygiene.
 
-**🧱 Prerequisites:**
+**Prerequisites:**
 
 - Exim 4 installed and configured for sending mail.
 - emailfilter already running locally (default on http://localhost:8000)
 - Internet access from the machine (for DNS & MX lookups).
 
-### 🔧 1: Create custom router for Exim
+### 1: Create custom router for Exim
 
 Add a router in Exim to call `emailfilter` before proceeding with delivery.
 
@@ -136,7 +136,7 @@ This uses a small helper script to call `emailfilter`, and if the result is bad 
 
 ---
 
-### 🧾 2: Copy `emailfilter-check.sh` script
+### 2: Copy `emailfilter-check.sh` script
 
 Copy `scripts/emailfilter-check.sh` to the Exim server at `/usr/local/bin/emailfilter-check.sh`, and make it executable:
 
@@ -146,7 +146,7 @@ chmod +x /usr/local/bin/emailfilter-check.sh
 
 ---
 
-### 🧪 3: Test
+### 3: Test
 
 Run a test email and observe logs:
 
@@ -161,7 +161,7 @@ If the email fails verification, it should be dropped or logged as rejected.
 
 ---
 
-## 🧰 Optional: Reject Instead of Dropping
+## Optional: Reject Instead of Dropping
 
 Change the router to **reject** instead of blackhole:
 
@@ -176,7 +176,7 @@ data = :fail: Email rejected by emailfilter verification.
 Here is how to configure Exim to call `emailfilter` during the **RCPT** stage to check the **sender's email address** and reject bad ones before accepting delivery:
 
 
-**🧱 Prerequisites:**
+**Prerequisites:**
 
 * Exim running as an SMTP server (receiving mail).
 * `emailfilter` running on `http://localhost:8000`.
@@ -184,7 +184,7 @@ Here is how to configure Exim to call `emailfilter` during the **RCPT** stage to
 
 ---
 
-### 🔧 1: Create ACL to use *emailfilter*
+### 1: Create ACL to use *emailfilter*
 
 Edit your Exim configuration (typically in `/etc/exim4/exim4.conf.template` or split config files under `/etc/exim4/conf.d/`):
 
@@ -202,7 +202,7 @@ Find the ACL section called `acl_check_rcpt` (this is where recipient validation
 
 ---
 
-### 🧾 2: Copy `emailfilter-check.sh` script
+### 2: Copy `emailfilter-check.sh` script
 
 Copy `scripts/emailfilter-check.sh` to the Exim server at `/usr/local/bin/emailfilter-check.sh`, and make it executable:
 
@@ -212,7 +212,7 @@ chmod +x /usr/local/bin/emailfilter-check.sh
 
 ---
 
-### 🧪 3: Test
+### 3: Test
 
 Use `telnet`, `swaks`, or just send test emails from a mail client. You should see messages like: `550 Sender address <some@disposablemail.com> rejected by emailfilter verification.`
 
@@ -220,7 +220,7 @@ And in logs: `Sender rejected by acl_check_rcpt: emailfilter`
 
 ---
 
-### 🧰 Optional: Only Filter External Senders
+### Optional: Only Filter External Senders
 
 To skip verification for trusted internal senders, you can wrap the check:
 
@@ -236,12 +236,12 @@ To skip verification for trusted internal senders, you can wrap the check:
 
 Here is how to integrate *emailfilter* with **Proxmox Mail Gateway (PMG)** to filter incoming emails based on sender address validation using the emailfilter service:
 
-**🧱 Prerequisites:**
+**Prerequisites:**
 - Proxmox Mail Gateway 7.x or newer installed and configured.
 - emailfilter service running locally and accessible on http://localhost:8000.
 - Root or administrative access to your Proxmox Mail Gateway.
 
-### 🧾 1: Copy `pmg-emailfilter-milter.sh` script
+### 1: Copy `pmg-emailfilter-milter.sh` script
 
 Copy `scripts/pmg-emailfilter-milter.sh` to the Exim server at `/usr/local/bin/pmg-emailfilter-milter.sh`, and make it executable:
 
@@ -251,7 +251,7 @@ chmod +x /usr/local/bin/pmg-emailfilter-milter.sh
 
 ---
 
-### 🔧 2: Configure PMG to use it
+### 2: Configure PMG to use it
 
 Edit the PMG configuration to add this script as a Milter:
 
@@ -261,7 +261,7 @@ Edit the PMG configuration to add this script as a Milter:
 
 ---
 
-### 🧪 3: Test
+### 3: Test
 
 Try sending emails from addresses that are invalid or disposable and verify that PMG rejects them with a 550 error referencing emailfilter.
 
