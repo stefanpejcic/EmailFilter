@@ -286,6 +286,10 @@ curl: (52) Empty reply from server
 
 Application did not start correctly - check the logs: `docker logs -f emailfilter`
 
+---
+
+Public IPv4 address not visible in the logs! - use a reverse proxy and pass the `X-Forwarded-For` header.
+
 # Todo
 
 - routes to display domains penalty and checked domains
