@@ -288,5 +288,5 @@ Application did not start correctly - check the logs: `docker logs -f emailfilte
 
 # Todo
 
-- routes to dispaly doamins penalty and checked domains
+- routes to display domains penalty and checked domains
 - 
