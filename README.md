@@ -258,4 +258,10 @@ ERROR:utils_async:[WHOIS Exception] [Errno 111] Connection refused
 
 means that outgoing connection via port `43` to whois servers is not working. Make sure TCP_OUT port `43` is opened on firewall, test using: `telnet whois.verisign-grs.com 43`
 
+----
 
+```
+curl: (52) Empty reply from server
+```
+
+Application did not start correctly - check the logs: `docker logs -f emailfilter`
