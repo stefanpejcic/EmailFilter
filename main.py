@@ -1,4 +1,5 @@
 import json
+import sqlite3
 from fastapi import FastAPI, HTTPException, Query, Path, Body
 from src.models import EmailInput, FeedbackInput
 from src.database import *
@@ -7,6 +8,9 @@ import asyncio
 from src.constants import load_list, add_to_list, remove_from_list
 from src.logger_config import get_logger
 from pathlib import Path as PathLib
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DB_PATH = os.path.join(BASE_DIR, "reputation.db")
 
 logger = get_logger(__name__)
 
@@ -288,4 +292,54 @@ def restore_default_scores():
         logger.error(f"Failed to restore default scores: {e}")
         raise HTTPException(status_code=500, detail="Failed to restore default scores.")
 
+def get_db_connection():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row  # dict-like rows
+    return conn
+
+@app.get("/domains/checked")
+def get_checked_domains():
+    """
+    Return all domains in reputation DB with total checks and user marked spam counts.
+    """
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT domain, total_checks, user_marked_spam FROM domain_reputation ORDER BY total_checks DESC")
+        rows = cursor.fetchall()
+        conn.close()
+        domains = [dict(row) for row in rows]
+        return {"domains": domains, "count": len(domains)}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch checked domains: {e}")
+
+@app.get("/domains/penalties")
+def get_domains_penalties():
+    """
+    Return all domains with calculated reputation penalties based on spam ratio.
+    """
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT domain, total_checks, user_marked_spam FROM domain_reputation ORDER BY domain")
+        rows = cursor.fetchall()
+        conn.close()
+        penalties = []
+        for row in rows:
+            total = row["total_checks"]
+            spam = row["user_marked_spam"]
+            if total == 0:
+                penalty = 0
+            else:
+                spam_ratio = spam / total
+                penalty = int(-50 * spam_ratio)
+            penalties.append({
+                "domain": row["domain"],
+                "total_checks": total,
+                "user_marked_spam": spam,
+                "reputation_penalty": penalty
+            })
+        return {"domains": penalties, "count": len(penalties)}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch domain penalties: {e}")
 
