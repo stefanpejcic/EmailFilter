@@ -4,7 +4,7 @@ from database import *
 from utils_async import *
 import asyncio
 from constants import load_list, add_to_list, remove_from_list
-from logger_config import get_logger
+from src.logger_config import get_logger
 
 logger = get_logger(__name__)
 
