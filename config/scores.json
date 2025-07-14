@@ -1,0 +1,10 @@
+{
+    "base": 40,
+    "mx_exists": 25,
+    "new_domain": -10,
+    "smtp_valid": 15,
+    "disposable": -25,
+    "blacklisted": -50
+    "whitelisted": 50,
+    "spam_keywords": -40
+}
