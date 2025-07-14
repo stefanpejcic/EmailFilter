@@ -15,7 +15,7 @@ BLACKLISTED_DOMAINS = load_list("blacklist")
 DISPOSABLE_DOMAINS = load_list("disposable")
 SPAM_KEYWORDS = load_list("spam_keywords")
 
-from logger_config import get_logger
+from src.logger_config import get_logger
 logger = get_logger(__name__)
 
 async def check_mx(domain: str) -> bool:
