@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, Query, Path
 from src.models import EmailInput, FeedbackInput
-from database import *
+from src.database import *
 from src.utils_async import *
 import asyncio
 from constants import load_list, add_to_list, remove_from_list
