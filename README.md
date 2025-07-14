@@ -16,7 +16,7 @@ git clone https://github.com/stefanpejcic/emailfilter emailfilter && cd emailfil
 
 that's it! It's now available locally on `localhost:8080` and you can query it with the following commands:
 
-# Usage
+# API Usage
 
 - Check email:
 ```
