@@ -15,52 +15,61 @@ BLACKLISTED_DOMAINS = load_list("blacklist")
 DISPOSABLE_DOMAINS = load_list("disposable")
 SPAM_KEYWORDS = load_list("spam_keywords")
 
-import logging
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+from logger_config import get_logger
+logger = get_logger(__name__)
 
 async def check_mx(domain: str) -> bool:
+    logger.info(f"Checking MX records for domain: {domain}")
     try:
         await resolver.query(domain, 'MX')
+        logger.info(f"MX record found for domain: {domain}")
         return True
-    except:
+    except Exception as e:
+        logger.warning(f"No MX record found for domain {domain}: {e}")
         return False
 
 async def smtp_check(email: str) -> bool:
+    domain = email.split('@')[1]
+    logger.info(f"Performing SMTP check for email: {email}")
     def inner():
-        domain = email.split('@')[1]
         try:
             records = dns.resolver.resolve(domain, 'MX')
             mx = str(records[0].exchange)
+            logger.info(f"Using MX server {mx} for domain {domain}")
             server = smtplib.SMTP(timeout=10)
             server.connect(mx)
             server.helo()
             server.mail("noreply@yourapi.com")
             code, _ = server.rcpt(email)
             server.quit()
-            return code == 250
-        except:
+            valid = code == 250
+            if valid:
+                logger.info(f"SMTP check passed for email {email} (code {code})")
+            else:
+                logger.warning(f"SMTP check failed for email {email} (code {code})")
+            return valid
+        except Exception as e:
+            logger.error(f"SMTP check exception for {email}: {e}")
             return False
     return await asyncio.get_event_loop().run_in_executor(executor, inner)
 
-
 async def is_new_domain(domain: str, threshold_days=30) -> bool:
+    logger.info(f"Checking if domain is new (threshold {threshold_days} days): {domain}")
     def inner():
         try:
             data = whois.whois(domain)
-            logger.info(f"[WHOIS Raw Data] {data}")
+            logger.debug(f"[WHOIS Raw Data] {data}")
 
             created = data.creation_date
-            logger.info(f"[Parsed Creation Date] {created}")
+            logger.debug(f"[Parsed Creation Date] {created}")
 
             if not created:
-                logger.warning("No creation date found.")
+                logger.warning(f"No creation date found for domain {domain}")
                 return True
 
             if isinstance(created, list):
                 created = created[0]
-                logger.info(f"[Using First Date from List] {created}")
+                logger.debug(f"[Using First Date from List] {created}")
 
             if isinstance(created, datetime):
                 created_date = created
@@ -68,29 +77,36 @@ async def is_new_domain(domain: str, threshold_days=30) -> bool:
                 try:
                     created_date = datetime.strptime(str(created), '%Y-%m-%d')
                 except Exception as e:
-                    logger.error(f"Failed to parse creation date: {created} | Error: {e}")
+                    logger.error(f"Failed to parse creation date {created} for domain {domain}: {e}")
                     return True
 
             age_days = (datetime.now() - created_date).days
-            logger.info(f"[Domain Age Days] {age_days}")
+            logger.info(f"Domain {domain} age: {age_days} days")
             return age_days < threshold_days
 
         except Exception as e:
-            logger.error(f"[WHOIS Exception] {e}")
+            logger.error(f"WHOIS lookup exception for domain {domain}: {e}")
             return True
 
     return await asyncio.get_event_loop().run_in_executor(executor, inner)
 
 def is_disposable(domain: str) -> bool:
-    return domain in DISPOSABLE_DOMAINS
+    result = domain in DISPOSABLE_DOMAINS
+    logger.info(f"Domain {domain} disposable check: {result}")
+    return result
 
 def is_blacklisted(domain: str) -> bool:
-    return domain in BLACKLISTED_DOMAINS
+    result = domain in BLACKLISTED_DOMAINS
+    logger.info(f"Domain {domain} blacklisted check: {result}")
+    return result
 
 def is_whitelisted(domain: str) -> bool:
-    return domain in WHITELISTED_DOMAINS
+    result = domain in WHITELISTED_DOMAINS
+    logger.info(f"Domain {domain} whitelisted check: {result}")
+    return result
 
 def contains_spam_keywords(email: str) -> bool:
     local = email.split("@")[0].lower()
-    return any(word in local for word in SPAM_KEYWORDS)
-  
+    result = any(word in local for word in SPAM_KEYWORDS)
+    logger.info(f"Email '{email}' spam keyword check: {result}")
+    return result
