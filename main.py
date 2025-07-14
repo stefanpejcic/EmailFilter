@@ -129,7 +129,7 @@ def get_all_lists():
             continue  # skip silently
     return result
 
-@app.delete("/lists/{list_name}/clear")
+@app.delete("/lists/{list_name}")
 def clear_list(list_name: str):
     if list_name not in LIST_FILES:
         raise HTTPException(status_code=404, detail="List not found.")
