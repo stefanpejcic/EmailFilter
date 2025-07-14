@@ -5,7 +5,7 @@ import dns.resolver
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
 import whois
-from constants import *
+from src.constants import *
 
 resolver = aiodns.DNSResolver()
 executor = ThreadPoolExecutor()
