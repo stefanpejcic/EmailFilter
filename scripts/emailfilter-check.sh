@@ -1,7 +1,9 @@
 #!/bin/bash
+# https://github.com/stefanpejcic/EmailFilter/blob/main/README.md#-exim-incoming-email-filtering
 
 EMAIL="$1"
 
+# https://github.com/stefanpejcic/EmailFilter/blob/main/README.md#api-usage
 RESPONSE=$(curl -s -X POST "http://localhost:8000/filter-email" \
   -H "Content-Type: application/json" \
   -d "{\"email\": \"$EMAIL\"}")
