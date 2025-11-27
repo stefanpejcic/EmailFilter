@@ -2,7 +2,7 @@ import aiodns
 import asyncio
 import smtplib
 import dns.resolver
-from datetime import datetime
+from datetime import datetime, timezone
 from concurrent.futures import ThreadPoolExecutor
 import whois
 from src.constants import *
@@ -80,7 +80,7 @@ async def is_new_domain(domain: str, threshold_days=30) -> bool:
                     logger.error(f"Failed to parse creation date {created} for domain {domain}: {e}")
                     return True
 
-            age_days = (datetime.now() - created_date).days
+            age_days = (datetime.now(timezone.utc) - created_date).days #timezone-aware
             logger.info(f"Domain {domain} age: {age_days} days")
             return age_days < threshold_days
 
