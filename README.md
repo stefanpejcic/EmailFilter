@@ -11,7 +11,7 @@ emailfilter is a lightweight, self-hosted containerized API service that helps y
 - **TCP_OUT** port `43` (for whois checks)
 
 ```
-git clone https://github.com/stefanpejcic/emailfilter emailfilter && cd emailfilter && docker compose up --build -d
+git clone https://github.com/stefanpejcic/emailfilter emailfilter && cd emailfilter && docker compose up --build --no-cache -d
 ```
 
 that's it! It's now available locally on `localhost:8080` and you can query it with the following commands:
