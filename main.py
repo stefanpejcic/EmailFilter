@@ -1,3 +1,29 @@
+################################################################################
+# Author: Stefan Pejcic <stefan@pejcic.rs>
+# Project: https://github.com/stefanpejcic/emailfilter/
+# Created: 14.07.2025
+# Last Modified: 27.11.2025
+# Copyright (c) 2025 Stefan Pejcic
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+################################################################################
+
 import json
 from fastapi import FastAPI, HTTPException, Query, Path, Body
 from src.models import EmailInput, FeedbackInput
@@ -9,14 +35,13 @@ from src.constants import load_list, add_to_list, remove_from_list
 from src.logger_config import get_logger
 from pathlib import Path as PathLib
 
+# ---------------------- STARTUP ---------------------- #
 logger = get_logger(__name__)
-
 init_db()
 app = FastAPI()
 
 # respect X-Forwarded-For and X-Forwarded-Proto headers
 app.add_middleware(ProxyHeadersMiddleware, trusted_hosts="*")
-
 
 BANNER = r"""
                            _ _  __ _ _ _            
@@ -62,6 +87,14 @@ def load_scores(config_path: PathLib = CONFIG_SCORES_PATH) -> dict:
 
 # on startup
 SCORES = load_scores()
+
+
+
+
+
+
+# ---------------------- API ENDPOINTS ---------------------- #
+# https://github.com/stefanpejcic/EmailFilter/blob/main/README.md#api-usage
 
 @app.post("/filter-email")
 async def filter_email(data: EmailInput):
@@ -279,7 +312,7 @@ def restore_default_scores():
     Application restart is required to apply changes.
     """
     try:
-        CONFIG_SCORES_PATH.parent.mkdir(parents=True, exist_ok=True)  # ensure config dir exists
+        CONFIG_SCORES_PATH.parent.mkdir(parents=True, exist_ok=True)
         with CONFIG_SCORES_PATH.open("w") as f:
             json.dump(DEFAULT_SCORES, f, indent=4)
 
