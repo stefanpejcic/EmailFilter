@@ -1,5 +1,6 @@
 #!/bin/bash
 # Simple milter script for PMG to verify sender email addresses with emailfilter
+# https://github.com/stefanpejcic/EmailFilter/blob/main/README.md#-proxmox-mail-gateway-incoming-email-filtering
 
 while read line; do
     # Parse the SMTP 'MAIL FROM' command to extract the sender email
