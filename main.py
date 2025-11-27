@@ -1,6 +1,6 @@
 import json
 from fastapi import FastAPI, HTTPException, Query, Path, Body
-from starlette.middleware.proxyheaders import ProxyHeadersMiddleware
+from starlette.middleware.proxy_headers import ProxyHeadersMiddleware
 from src.models import EmailInput, FeedbackInput
 from src.database import *
 from src.utils_async import *
