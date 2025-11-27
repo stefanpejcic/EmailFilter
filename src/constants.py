@@ -1,4 +1,4 @@
-from pathlib import Path as PathLib  # 👈 alias pathlib
+from pathlib import Path as PathLib
 
 BASE_DIR = PathLib(__file__).parent.parent / "lists"
 
