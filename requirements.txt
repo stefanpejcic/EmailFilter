@@ -6,4 +6,3 @@ python-whois
 pydantic
 sqlite-utils
 pydantic[email]
-starlette
