@@ -60,6 +60,7 @@ logger.info("\n" + BANNER)
 DEFAULT_SCORES = {
     "base": 50,
     "mx_exists": 20,
+    "gibberish": -5,
     "smtp_valid": 20,
     "whitelisted": 10,
     "new_domain": -10,
@@ -107,6 +108,7 @@ async def filter_email(data: EmailInput):
         mx_task = check_mx(domain)
         smtp_task = smtp_check(email)
         new_domain_task = is_new_domain(domain)
+        gibberish_task = check_gibberish(domain)
 
         # Sync checks
         disposable = is_disposable(domain)
@@ -115,8 +117,8 @@ async def filter_email(data: EmailInput):
         spam_keywords = contains_spam_keywords(email)
 
         # Gather results concurrently
-        mx_exists, smtp_valid, new_domain = await asyncio.gather(
-            mx_task, smtp_task, new_domain_task
+        mx_exists, is_gibberish, smtp_valid, new_domain = await asyncio.gather(
+            mx_task, gibberish_task, smtp_task, new_domain_task
         )
 
         # Log domain check and reputation penalty
@@ -125,6 +127,8 @@ async def filter_email(data: EmailInput):
 
         # Calculate score
         score = SCORES["base"]
+        if is_gibberish:
+            score += SCORES["is_gibberish"]
         if mx_exists:
             score += SCORES["mx_exists"]
         if smtp_valid:
@@ -152,6 +156,7 @@ async def filter_email(data: EmailInput):
             "disposable": disposable,
             "blacklisted": blacklisted,
             "mx_exists": mx_exists,
+            "gibberish": is_gibberish,
             "smtp_valid": smtp_valid,
             "new_domain": new_domain,
             "spam_keywords": spam_keywords,
