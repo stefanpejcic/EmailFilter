@@ -18,6 +18,16 @@ SPAM_KEYWORDS = load_list("spam_keywords")
 from src.logger_config import get_logger
 logger = get_logger(__name__)
 
+
+async def check_gibberish(email: str) -> bool:
+    local_part = email.split("@")[0]
+    logger.info(f"[gibberish] Checking if '{local_part}' is gibberish")
+    if re.search(r"[bcdfghjklmnpqrstvwxyz]{5,}", local_part, re.IGNORECASE):
+        logger.warning(f"'{local_part}' detected as gibberish")
+        return True
+    logger.info(f"'{local_part}' seems fine")
+    return False
+
 async def check_mx(domain: str) -> bool:
     logger.info(f"Checking MX records for domain: {domain}")
     try:
