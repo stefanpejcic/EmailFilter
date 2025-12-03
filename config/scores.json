@@ -6,5 +6,6 @@
     "disposable": -25,
     "blacklisted": -50,
     "whitelisted": 50,
+    "is_giberish": -5,
     "spam_keywords": -40
 }
