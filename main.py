@@ -2,7 +2,7 @@
 # Author: Stefan Pejcic <stefan@pejcic.rs>
 # Project: https://github.com/stefanpejcic/emailfilter/
 # Created: 14.07.2025
-# Last Modified: 27.11.2025
+# Last Modified: 03.12.2025
 # Copyright (c) 2025 Stefan Pejcic
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
