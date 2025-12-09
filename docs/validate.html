@@ -106,7 +106,7 @@ function emailChecker() {
       this.response = "Checking...";
 
       try {
-        const res = await fetch("http://emailfilter-api.pejcic.rs:8000/filter-email"", {
+        const res = await fetch("http://emailfilter-api.pejcic.rs:8000/filter-email", {
           method: "POST",
           headers: { 
             "Content-Type": "application/json"
