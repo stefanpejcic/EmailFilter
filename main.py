@@ -132,7 +132,7 @@ def invalidate_cache(list_name: str):
 async def filter_email(data: EmailInput):
     email = data.email
     domain = email.split("@")[1].lower()
-    logger.info(f"/filter-email - {email}")
+    logger.info(f"Checking address: {email}")
 
     try:
         check_in_list = check_domain_in_lists([domain])[domain]
