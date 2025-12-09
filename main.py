@@ -29,11 +29,14 @@ from fastapi import FastAPI, HTTPException, Query, Path, Body
 from src.models import EmailInput, FeedbackInput
 from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 from src.database import *
-from src.utils_async import *
+
 import asyncio
 from src.constants import load_list, add_to_list, remove_from_list
 from src.logger_config import get_logger
 from pathlib import Path as PathLib
+
+_cached_lists = {}
+from src.utils_async import *
 
 # ---------------------- STARTUP ---------------------- #
 logger = get_logger(__name__)
@@ -100,16 +103,9 @@ SCORES = load_scores()
 
 
 
-_cached_lists = {}
 
-def get_domain_set(list_name: str) -> set:
-    """
-    Returns the cached set for a list. Loads from disk if not cached.
-    """
-    global _cached_lists
-    if list_name not in _cached_lists:
-        _cached_lists[list_name] = set(load_list(list_name))
-    return _cached_lists[list_name]
+
+
 
 def invalidate_cache(list_name: str):
     """
