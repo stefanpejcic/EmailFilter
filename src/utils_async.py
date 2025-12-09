@@ -59,7 +59,7 @@ async def smtp_check(email: str) -> bool:
 # cache domain
 @lru_cache(maxsize=1000)
 def cached_domain_age(domain):
-    return asyncio.run(is_new_domain(domain))
+    return await is_new_domain(domain)
 
 async def is_new_domain(domain: str, threshold_days=30) -> bool:
     logger.debug(f"Checking if domain is new (threshold {threshold_days} days): {domain}")
