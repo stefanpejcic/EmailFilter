@@ -75,7 +75,7 @@ async def is_new_domain(domain: str, threshold_days=30) -> bool:
 
             if not created:
                 logger.warning(f"No creation date found for domain {domain}")
-                return True
+                return True, None  # Age unknown
 
             if isinstance(created, list):
                 created = created[0]
@@ -88,15 +88,15 @@ async def is_new_domain(domain: str, threshold_days=30) -> bool:
                     created_date = datetime.strptime(str(created), '%Y-%m-%d')
                 except Exception as e:
                     logger.error(f"Failed to parse creation date {created} for domain {domain}: {e}")
-                    return True
+                    return True, None
 
             age_days = (datetime.now(timezone.utc) - created_date).days #timezone-aware
             logger.info(f"Domain {domain} age: {age_days} days")
-            return age_days < threshold_days
+            return age_days < threshold_days, age_days
 
         except Exception as e:
             logger.error(f"WHOIS lookup exception for domain {domain}: {e}")
-            return True
+            return True, None
 
     return await asyncio.get_event_loop().run_in_executor(executor, inner)
 
