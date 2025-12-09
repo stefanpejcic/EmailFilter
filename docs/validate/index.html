@@ -105,8 +105,8 @@
         x-text="response">
       </pre>
 
-      <div x-show="response" class="mt-2 text-xs text-gray-500">
-        Response generated in <span x-text="responseTime"></span> ms
+      <div x-show="responseTime" class="mt-2 text-xs text-gray-500">
+        Response generated in <span x-text="responseTime"></span> ms (demo is shared and restricted to 1 core / 1 GB RAM)
       </div>
 
     </div>
@@ -119,12 +119,12 @@ function emailChecker() {
     input: "",
     response: "",
     loading: false,
-    responseTime: 0,
+    responseTime: null,
 
     async submitForm() {
       this.loading = true;
       this.response = "Checking...";
-      this.responseTime = 0;
+      this.responseTime = null;
 
       const start = performance.now();
 
