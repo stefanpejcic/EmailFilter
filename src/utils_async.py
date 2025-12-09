@@ -22,6 +22,17 @@ from src.logger_config import get_logger
 logger = get_logger(__name__)
 
 
+
+def get_domain_set(list_name: str) -> set:
+    """
+    Returns the cached set for a list. Loads from disk if not cached.
+    """
+    global _cached_lists
+    if list_name not in _cached_lists:
+        _cached_lists[list_name] = set(load_list(list_name))
+    return _cached_lists[list_name]
+
+
 async def check_gibberish(email: str) -> bool:
     local_part = email.split("@")[0]
     logger.debug(f"Checking if '{local_part}' is gibberish")
