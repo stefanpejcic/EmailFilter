@@ -458,6 +458,73 @@
 
 
 
+<div id="how" class="py-10 overflow-hidden bg-gray-50 sm:py-24">
+        <div class="mx-auto max-w-7xl md:px-6 lg:px-8">
+            <div class="grid grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:grid-cols-2 lg:items-start">
+                <div class="flex flex-col justify-center h-full px-6 md:px-0 lg:pr-4 lg:pt-4">
+                    <div class="max-w-2xl mx-auto lg:mx-0 lg:max-w-lg">
+                        <h2 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-3xl">Block fake users with one API call</h2>
+                        <p class="mt-6 text-lg leading-8 text-gray-600">Send any email address to API and instantly know if it's:</p>
+                        <ul class="mt-6 text-lg leading-8 text-gray-600 list-disc list-inside">
+                            <li>A disposable email address (like TempMail)</li>
+                            <li>A newly registered domain</li>
+                            <li>A valid domain with working mail servers</li>
+                            <li>Reported as SPAM by your other users</li>
+                        </ul>
+                        <div class="flex mt-6">
+                            <a class="flex items-center justify-center gap-4 px-6 py-4 text-lg font-semibold text-white transition-colors rounded-lg bg-gray-800 outline-2 outline-offset-2 hover:opacity-80 active:bg-primary-800 active:text-white/80" href="api.html">
+                                <span>API Documentation</span>
+                                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M12.97 3.97a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 1 1-1.06-1.06l6.22-6.22H3a.75.75 0 0 1 0-1.5h16.19l-6.22-6.22a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"></path>
+</svg>                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="sm:px-6 lg:px-0">
+                    <div class="relative px-6 pt-8 overflow-hidden bg-gray-900 isolate sm:mx-auto sm:max-w-2xl sm:rounded-3xl sm:pr-0 lg:mx-0 lg:max-w-none">
+                        
+                        <div class="max-w-2xl mx-auto sm:mx-0 sm:max-w-none">
+                            <div class="w-screen overflow-hidden bg-black rounded-l-xl ring-1 ring-white/10">
+                                <div class="p-6">
+                                    <pre class="text-[0.8125rem] leading-6 text-gray-300"><code class="" data-highlighted="yes">curl -X POST "http://localhost:8000/filter-email" \
+     -H "Content-Type: application/json" \
+     -d '{"email": "test@example.com"}'</code></pre>
+                                </div>
+                            </div>
+                            <div class="w-screen mt-4 overflow-hidden bg-black rounded-tl-xl ring-1 ring-white/10">
+                                <div class="p-6">
+                                    <pre class="text-[0.8125rem] leading-6 text-gray-300"><code class="language-json" data-highlighted="yes">{
+    "email": "example@example.com",
+    "domain": "example.com",
+    "disposable": false,
+    "blacklisted": false,
+    "mx_exists": true,
+    "gibberish": false,
+    "smtp_valid": true,
+    "new_domain": false,
+    "domain_age_in_days": 3650,
+    "spam_keywords": false,
+    "reputation_penalty": 0,
+    "score": 95,
+    "verdict": "accepted"
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="absolute inset-0 pointer-events-none ring-1 ring-inset ring-black/10 sm:rounded-3xl" aria-hidden="true"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+  
+
+
+
+
+  
 
 </body>
 </html>
