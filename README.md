@@ -25,6 +25,27 @@ curl -X POST "http://localhost:8000/filter-email" \
      -d '{"email": "test@example.com"}'
 ```
 
+Example response:
+
+```json
+{
+    "email": "example@example.com",
+    "domain": "example.com",
+    "disposable": false,
+    "blacklisted": false,
+    "mx_exists": true,
+    "gibberish": false,
+    "smtp_valid": true,
+    "new_domain": false,
+    "domain_age_in_days": 3650,
+    "spam_keywords": false,
+    "reputation_penalty": 0,
+    "score": 95,
+    "verdict": "accepted"
+}
+
+```
+
 - Add domain to whitelist:
 ```
 curl -X POST "http://localhost:8000/whitelist?domain=example.com"
