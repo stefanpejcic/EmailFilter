@@ -94,6 +94,42 @@ SCORES = load_scores()
 
 
 
+
+
+
+
+
+
+_cached_lists = {}
+
+def get_domain_set(list_name: str) -> set:
+    """
+    Returns the cached set for a list. Loads from disk if not cached.
+    """
+    global _cached_lists
+    if list_name not in _cached_lists:
+        _cached_lists[list_name] = set(load_list(list_name))
+    return _cached_lists[list_name]
+
+def invalidate_cache(list_name: str):
+    """
+    Remove a list from the cache to force reload on next access.
+    """
+    global _cached_lists
+    if list_name in _cached_lists:
+        del _cached_lists[list_name]
+        logger.debug(f"Cache invalidated for {list_name}")
+
+
+
+
+
+
+
+
+
+
+
 # ---------------------- API ENDPOINTS ---------------------- #
 # https://github.com/stefanpejcic/EmailFilter/blob/main/README.md#api-usage
 
@@ -192,6 +228,7 @@ def add_whitelist(domain: str = Query(...)):
         logger.warning(f"Domain is blacklisted, cannot whitelist without removal: {domain}")
         raise HTTPException(status_code=400, detail="Domain is blacklisted. Remove it before adding to whitelist.")
     add_to_list("whitelist", domain)
+    invalidate_cache("whitelist")
     logger.debug(f"Domain added to whitelist: {domain}")
     return {"message": f"{domain} added to whitelist."}
 
@@ -204,6 +241,7 @@ def delete_whitelist(domain: str = Query(...)):
         logger.warning(f"Domain not found in whitelist: {domain}")
         raise HTTPException(status_code=404, detail="Domain not in whitelist.")
     remove_from_list("whitelist", domain)
+    invalidate_cache("whitelist")
     logger.debug(f"Domain removed from whitelist: {domain}")
     return {"message": f"{domain} removed from whitelist."}
 
@@ -219,6 +257,7 @@ def add_blacklist(domain: str = Query(...)):
         logger.warning(f"Domain is whitelisted, cannot blacklist without removal: {domain}")
         raise HTTPException(status_code=400, detail="Domain is whitelisted. Remove it before adding to blacklist.")
     add_to_list("blacklist", domain)
+    invalidate_cache("blacklist")
     logger.debug(f"Domain added to blacklist: {domain}")
     return {"message": f"{domain} added to blacklist."}
 
@@ -231,6 +270,7 @@ def delete_blacklist(domain: str = Query(...)):
         logger.warning(f"Domain not found in blacklist: {domain}")
         raise HTTPException(status_code=404, detail="Domain not in blacklist.")
     remove_from_list("blacklist", domain)
+    invalidate_cache("blacklist")
     logger.debug(f"Domain removed from blacklist: {domain}")
     return {"message": f"{domain} removed from blacklist."}
 
@@ -275,6 +315,7 @@ def clear_list(list_name: str):
         raise HTTPException(status_code=404, detail="List not found.")
     _loaded_sets[list_name] = set()
     save_list(list_name)
+    invalidate_cache(list_name)
     logger.debug(f"List cleared: {list_name}")
     return {"message": f"{list_name} cleared."}
 
