@@ -22,11 +22,10 @@ logger = get_logger(__name__)
 
 async def check_gibberish(email: str) -> bool:
     local_part = email.split("@")[0]
-    logger.info(f"[gibberish] Checking if '{local_part}' is gibberish")
+    logger.info(f"Checking if '{local_part}' is gibberish")
     if re.search(r"[bcdfghjklmnpqrstvwxyz]{5,}", local_part, re.IGNORECASE):
         logger.warning(f"'{local_part}' detected as gibberish")
         return True
-    logger.info(f"'{local_part}' seems fine")
     return False
 
 async def check_mx(domain: str) -> bool:
@@ -47,7 +46,7 @@ async def smtp_check(email: str) -> bool:
             records = dns.resolver.resolve(domain, 'MX')
             mx = str(records[0].exchange)
             logger.info(f"Using MX server {mx} for domain {domain}")
-            server = smtplib.SMTP(timeout=10)
+            server = smtplib.SMTP(timeout=2)
             server.connect(mx)
             server.helo()
             server.mail("noreply@yourapi.com")
