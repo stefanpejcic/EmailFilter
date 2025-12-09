@@ -106,10 +106,12 @@ function emailChecker() {
       this.response = "Checking...";
 
       try {
-        const res = await fetch("http://emailfilter-api.pejcic.rs:8080/", {
+        const res = await fetch("http://emailfilter-api.pejcic.rs:8000/filter-email"", {
           method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: new URLSearchParams({ input: this.input })
+          headers: { 
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ email: this.input })
         });
 
         const text = await res.text();
@@ -121,9 +123,6 @@ function emailChecker() {
   };
 }
 </script>
-
-
-
 
 </body>
 </html>
