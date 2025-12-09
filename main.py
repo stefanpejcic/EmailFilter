@@ -140,27 +140,23 @@ async def filter_email(data: EmailInput):
     logger.info(f"Received filter request for email: {email}")
 
     try:
-        # Async checks
-        mx_task = check_mx(domain)
-        smtp_task = smtp_check(email)
-        new_domain_task = cached_domain_age(domain)
-
-        # Sync checks
         check_in_list = check_domain_in_lists([domain])[domain]
+
+        # run 1 by 1
         disposable = check_in_list["disposable"]
         blacklisted = check_in_list["blacklisted"]
         whitelisted = check_in_list["whitelisted"]
-
         spam_keywords = contains_spam_keywords(email)
         is_gibberish = check_gibberish(domain)
 
-        # Gather results concurrently
-        mx_exists, smtp_valid, (new_domain, domain_age_in_days) = await asyncio.gather(
-            mx_task, smtp_task, new_domain_task
-        )
+      
+        # run all at once
+        mx_task = check_mx(domain)
+        smtp_task = smtp_check(email)
+        new_domain_task = cached_domain_age(domain)
+        mx_exists, smtp_valid, (new_domain, domain_age_in_days) = await asyncio.gather(mx_task, smtp_task, new_domain_task)
 
-        # Log domain check and reputation penalty
-        log_domain_check(domain)
+        log_domain_check(domain) #todo: make optional for prod
         rep_penalty = get_reputation_penalty(domain)
 
         # Calculate score
@@ -183,9 +179,7 @@ async def filter_email(data: EmailInput):
             score += SCORES["spam_keywords"]
         score += rep_penalty
         score = max(0, min(100, score))
-
         verdict = "accepted" if score >= 60 else "rejected"
-
         logger.debug(f"Filter result for {email} - score: {score}, verdict: {verdict}")
 
         return {
