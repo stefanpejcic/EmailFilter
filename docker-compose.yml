@@ -2,6 +2,7 @@ services:
   emailfilter:
     container_name: emailfilter
     build: .
+    image: stefanpejcic/emailfilter:latest
     ports:
       - "${EMAILFILTER_IP:-127.0.0.1}:${EMAILFILTER_PORT:-8000}:8000"
     volumes:
