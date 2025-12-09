@@ -21,6 +21,7 @@ SPAM_PATTERN = re.compile("|".join(map(re.escape, SPAM_KEYWORDS)), re.IGNORECASE
 from src.logger_config import get_logger
 logger = get_logger(__name__)
 
+_cached_lists = {}
 
 
 def get_domain_set(list_name: str) -> set:
