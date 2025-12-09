@@ -13,4 +13,5 @@ services:
       - no-new-privileges:true
     mem_limit: ${EMAILFILTER_RAM:-1g}
     cpus: ${EMAILFILTER_CPU:-1.0}
-    pids_limit: 1000
+    pids_limit: 10000
+
