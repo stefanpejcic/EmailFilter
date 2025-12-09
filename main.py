@@ -155,6 +155,7 @@ async def filter_email(data: EmailInput):
             "domain": domain,
             "disposable": disposable,
             "blacklisted": blacklisted,
+            "whitelisted": whitelisted,
             "mx_exists": mx_exists,
             "gibberish": is_gibberish,
             "smtp_valid": smtp_valid,
