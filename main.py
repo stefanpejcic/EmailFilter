@@ -107,7 +107,7 @@ async def filter_email(data: EmailInput):
         # Async checks
         mx_task = check_mx(domain)
         smtp_task = smtp_check(email)
-        new_domain_task = is_new_domain(domain)
+        new_domain_task = cached_domain_age(domain)
         gibberish_task = check_gibberish(domain)
 
         # Sync checks
