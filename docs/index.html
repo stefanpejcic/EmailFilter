@@ -107,12 +107,12 @@
           ],
           showStaggered() {
             this.notifications.forEach((n, i) => {
-              setTimeout(() => n.visible = true, i * 1000); // 1s stagger per item
+              setTimeout(() => n.visible = true, i * 800);
             });
           }
         }"
         x-init="showStaggered()"
-        class="relative flex items-start justify-center h-full"
+        class="relative flex lg:pt-6 items-start justify-center h-full"
       >
         <div class="grid w-full gap-4 mx-auto sm:max-w-sm">
 
