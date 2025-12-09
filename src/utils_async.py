@@ -100,13 +100,18 @@ async def is_new_domain(domain: str, threshold_days=30) -> bool:
 
 
 
+
 def check_domain_in_lists(domains: list[str]):
     results = {}
     domain_set = set(domains)
 
-    disposable_domains = domain_set & DISPOSABLE_DOMAINS
-    blacklisted_domains = domain_set & BLACKLISTED_DOMAINS
-    whitelisted_domains = domain_set & WHITELISTED_DOMAINS
+    disposable_set = get_domain_set("disposable")
+    blacklist_set = get_domain_set("blacklist")
+    whitelist_set = get_domain_set("whitelist")
+
+    disposable_domains = domain_set & disposable_set
+    blacklisted_domains = domain_set & blacklist_set
+    whitelisted_domains = domain_set & whitelist_set
 
     for domain in domain_set:
         results[domain] = {
