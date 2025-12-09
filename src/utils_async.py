@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 from concurrent.futures import ThreadPoolExecutor
 import whois
 from src.constants import *
-from functools import lru_cache
+from async_lru import alru_cache
 
 resolver = aiodns.DNSResolver()
 executor = ThreadPoolExecutor()
@@ -57,8 +57,8 @@ async def smtp_check(email: str) -> bool:
 
 
 # cache domain
-@lru_cache(maxsize=1000)
-def cached_domain_age(domain):
+@alru_cache(maxsize=1000)
+async def cached_domain_age(domain):
     return await is_new_domain(domain)
 
 async def is_new_domain(domain: str, threshold_days=30) -> bool:
