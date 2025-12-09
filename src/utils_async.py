@@ -16,6 +16,7 @@ WHITELISTED_DOMAINS = load_list("whitelist")
 BLACKLISTED_DOMAINS = load_list("blacklist")
 DISPOSABLE_DOMAINS = load_list("disposable")
 SPAM_KEYWORDS = load_list("spam_keywords")
+SPAM_PATTERN = re.compile("|".join(map(re.escape, SPAM_KEYWORDS)), re.IGNORECASE)
 
 from src.logger_config import get_logger
 logger = get_logger(__name__)
@@ -23,17 +24,17 @@ logger = get_logger(__name__)
 
 async def check_gibberish(email: str) -> bool:
     local_part = email.split("@")[0]
-    logger.info(f"Checking if '{local_part}' is gibberish")
+    logger.debug(f"Checking if '{local_part}' is gibberish")
     if re.search(r"[bcdfghjklmnpqrstvwxyz]{5,}", local_part, re.IGNORECASE):
         logger.warning(f"'{local_part}' detected as gibberish")
         return True
     return False
 
 async def check_mx(domain: str) -> bool:
-    logger.info(f"Checking MX records for domain: {domain}")
+    logger.debug(f"Checking MX records for domain: {domain}")
     try:
         await resolver.query(domain, 'MX')
-        logger.info(f"MX record found for domain: {domain}")
+        logger.debug(f"MX record found for domain: {domain}")
         return True
     except Exception as e:
         logger.warning(f"No MX record found for domain {domain}: {e}")
@@ -61,7 +62,7 @@ def cached_domain_age(domain):
     return asyncio.run(is_new_domain(domain))
 
 async def is_new_domain(domain: str, threshold_days=30) -> bool:
-    logger.info(f"Checking if domain is new (threshold {threshold_days} days): {domain}")
+    logger.debug(f"Checking if domain is new (threshold {threshold_days} days): {domain}")
     def inner():
         try:
             data = whois.whois(domain)
@@ -88,7 +89,7 @@ async def is_new_domain(domain: str, threshold_days=30) -> bool:
                     return True, None
 
             age_days = (datetime.now(timezone.utc) - created_date).days #timezone-aware
-            logger.info(f"Domain {domain} age: {age_days} days")
+            logger.debug(f"Domain {domain} age: {age_days} days")
             return age_days < threshold_days, age_days
 
         except Exception as e:
@@ -99,21 +100,19 @@ async def is_new_domain(domain: str, threshold_days=30) -> bool:
 
 def is_disposable(domain: str) -> bool:
     result = domain in DISPOSABLE_DOMAINS
-    logger.info(f"Domain {domain} disposable check: {result}")
+    logger.debug(f"Domain {domain} disposable check: {result}")
     return result
 
 def is_blacklisted(domain: str) -> bool:
     result = domain in BLACKLISTED_DOMAINS
-    logger.info(f"Domain {domain} blacklisted check: {result}")
+    logger.debug(f"Domain {domain} blacklisted check: {result}")
     return result
 
 def is_whitelisted(domain: str) -> bool:
     result = domain in WHITELISTED_DOMAINS
-    logger.info(f"Domain {domain} whitelisted check: {result}")
+    logger.debug(f"Domain {domain} whitelisted check: {result}")
     return result
 
 def contains_spam_keywords(email: str) -> bool:
     local = email.split("@")[0].lower()
-    result = any(word in local for word in SPAM_KEYWORDS)
-    logger.info(f"Email '{email}' spam keyword check: {result}")
-    return result
+    return bool(SPAM_PATTERN.search(local))
