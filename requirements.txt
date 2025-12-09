@@ -7,3 +7,4 @@ pydantic
 sqlite-utils
 pydantic[email]
 aiosmtplib
+async-lru
