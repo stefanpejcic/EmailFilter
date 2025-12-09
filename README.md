@@ -14,7 +14,7 @@ emailfilter is a lightweight, self-hosted containerized API service that helps y
 git clone https://github.com/stefanpejcic/emailfilter emailfilter && cd emailfilter && docker compose build --no-cache && docker compose up -d
 ```
 
-that's it! It's now available locally on `localhost:8080` and you can query it with the following commands:
+that's it! It's now available locally on `localhost:8000` and you can query it with the following commands:
 
 # API Usage
 
