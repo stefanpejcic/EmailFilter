@@ -12,9 +12,9 @@ from functools import lru_cache
 resolver = aiodns.DNSResolver()
 executor = ThreadPoolExecutor()
 
-WHITELISTED_DOMAINS = load_list("whitelist")
-BLACKLISTED_DOMAINS = load_list("blacklist")
-DISPOSABLE_DOMAINS = load_list("disposable")
+WHITELISTED_DOMAINS = set(load_list("whitelist"))
+BLACKLISTED_DOMAINS = set(load_list("blacklist"))
+DISPOSABLE_DOMAINS = set(load_list("disposable"))
 SPAM_KEYWORDS = load_list("spam_keywords")
 SPAM_PATTERN = re.compile("|".join(map(re.escape, SPAM_KEYWORDS)), re.IGNORECASE)
 
@@ -98,20 +98,23 @@ async def is_new_domain(domain: str, threshold_days=30) -> bool:
 
     return await asyncio.get_event_loop().run_in_executor(executor, inner)
 
-def is_disposable(domain: str) -> bool:
-    result = domain in DISPOSABLE_DOMAINS
-    logger.debug(f"Domain {domain} disposable check: {result}")
-    return result
 
-def is_blacklisted(domain: str) -> bool:
-    result = domain in BLACKLISTED_DOMAINS
-    logger.debug(f"Domain {domain} blacklisted check: {result}")
-    return result
 
-def is_whitelisted(domain: str) -> bool:
-    result = domain in WHITELISTED_DOMAINS
-    logger.debug(f"Domain {domain} whitelisted check: {result}")
-    return result
+def check_domain_in_lists(domains: list[str]):
+    results = {}
+    domain_set = set(domains)
+
+    disposable_domains = domain_set & DISPOSABLE_DOMAINS
+    blacklisted_domains = domain_set & BLACKLISTED_DOMAINS
+    whitelisted_domains = domain_set & WHITELISTED_DOMAINS
+
+    for domain in domain_set:
+        results[domain] = {
+            "disposable": domain in disposable_domains,
+            "blacklisted": domain in blacklisted_domains,
+            "whitelisted": domain in whitelisted_domains
+        }
+    return results
 
 def contains_spam_keywords(email: str) -> bool:
     local = email.split("@")[0].lower()
