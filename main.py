@@ -35,7 +35,6 @@ from src.constants import load_list, add_to_list, remove_from_list
 from src.logger_config import get_logger
 from pathlib import Path as PathLib
 
-_cached_lists = {}
 from src.utils_async import *
 
 # ---------------------- STARTUP ---------------------- #
