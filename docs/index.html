@@ -34,7 +34,7 @@
           <b>Designed with data protection in mind</b>, it performs syntax validation, domain checks, and MX/server-level verification - all without exposing your data to any third-party APIs.
         </p>
         <div class="flex flex-col items-start mt-8 gap-y-2">
-          <a href="#start-here" class="inline-flex justify-center px-6 py-4 text-lg font-semibold text-white rounded-lg bg-blue-600 hover:opacity-80 transition-colors lg:block">
+          <a href="#" class="inline-flex justify-center px-6 py-4 text-lg font-semibold text-white rounded-lg bg-blue-600 hover:opacity-80 transition-colors lg:block">
             Get started
           </a>
           <span class="ml-3 text-sm text-gray-500">It's free!</span>
@@ -56,38 +56,69 @@
   </svg>
         </div>
 
-        <!-- Notifications -->
-        <div x-data="{ notifications: [
-              { message: 'jbezos@amazon.com <span class=\"font-medium\">just signed up</span>', type: 'success', visible: true },
-              { message: 'john.doe@yopmail.com <span class=\"font-medium\">was blocked</span>', type: 'error', visible: true },
-              { message: 'tcook@apple.com <span class=\"font-medium\">just signed up</span>', type: 'success', visible: true }
-            ]}" class="relative flex items-start justify-center h-full">
-          <div class="grid w-full gap-4 mx-auto sm:max-w-sm">
-            <template x-for="(notification, index) in notifications" :key="index">
-              <div x-show="notification.visible"
-                   x-transition:enter="transition ease-out duration-300"
-                   x-transition:enter-start="opacity-0 transform translate-y-4"
-                   x-transition:enter-end="opacity-100 transform translate-y-0"
-                   x-transition:leave="transition ease-in duration-300"
-                   x-transition:leave-start="opacity-100 transform translate-y-0"
-                   x-transition:leave-end="opacity-0 transform translate-y-4"
-                   class="flex items-center justify-between gap-2 py-1 pl-1 pr-8 rounded-full"
-                   :class="notification.type === 'error' ? 'bg-red-50' : 'bg-green-50'">
-                <div class="flex items-center justify-center w-8 h-8 p-1.5 rounded-full"
-                     :class="notification.type === 'error' ? 'bg-red-100' : 'bg-green-100'">
-                  <svg x-show="notification.type === 'error'" class="w-full h-full text-red-600" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                    <path fill-rule="evenodd" d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"></path>
-                  </svg>
-                  <svg x-show="notification.type === 'success'" class="w-full h-full text-green-600" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                    <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <span x-html="notification.message" :class="notification.type === 'error' ? 'text-red-900' : 'text-green-900'"></span>
+
+
+
+
+
+      <div
+        x-data="{
+          notifications: [
+            { message: 'jbezos@amazon.com <span class=\'font-medium\'>just signed up</span>', type: 'success', visible: false },
+            { message: 'john.doe@yopmail.com <span class=\'font-medium\'>was blocked</span>', type: 'error', visible: false },
+            { message: 'tcook@apple.com <span class=\'font-medium\'>just signed up</span>', type: 'success', visible: false }
+          ],
+          showStaggered() {
+            this.notifications.forEach((n, i) => {
+              setTimeout(() => n.visible = true, i * 1000); // 1s stagger per item
+            });
+          }
+        }"
+        x-init="showStaggered()"
+        class="relative flex items-start justify-center h-full"
+      >
+        <div class="grid w-full gap-4 mx-auto sm:max-w-sm">
+
+          <template x-for="(notification, index) in notifications" :key="index">
+            <div
+              x-show="notification.visible"
+              x-transition:enter="transition ease-out duration-300"
+              x-transition:enter-start="opacity-0 transform translate-y-4"
+              x-transition:enter-end="opacity-100 transform translate-y-0"
+              x-transition:leave="transition ease-in duration-300"
+              x-transition:leave-start="opacity-100 transform translate-y-0"
+              x-transition:leave-end="opacity-0 transform translate-y-4"
+              class="flex items-center justify-between gap-2 py-1 pl-1 pr-8 rounded-full"
+              :class="notification.type === 'error' ? 'bg-red-50' : 'bg-green-50'">
+
+              <div
+                class="flex items-center justify-center w-8 h-8 p-1.5 rounded-full"
+                :class="notification.type === 'error' ? 'bg-red-100' : 'bg-green-100'">
+
+                <!-- Error icon -->
+                <svg x-show="notification.type === 'error'" class="w-full h-full text-red-600" fill="currentColor" viewBox="0 0 24 24">
+                  <path fill-rule="evenodd"
+                        d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z"
+                        clip-rule="evenodd"></path>
+                </svg>
+
+                <!-- Success icon -->
+                <svg x-show="notification.type === 'success'" class="w-full h-full text-green-600" fill="currentColor" viewBox="0 0 24 24">
+                  <path fill-rule="evenodd"
+                        d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z"
+                        clip-rule="evenodd"></path>
+                </svg>
+
               </div>
-            </template>
-          </div>
+
+              <span x-html="notification.message"
+                    :class="notification.type === 'error' ? 'text-red-900' : 'text-green-900'"></span>
+            </div>
+          </template>
+
         </div>
       </div>
+
 
     </div>
   </section>
@@ -96,303 +127,305 @@
 
 <section class="mb-12" id="features">
 
-  <div class="max-w-2xl px-6 mx-auto lg:max-w-7xl lg:px-8">
-      <h2 class="font-semibold text-center text-primary-600 text-base/7">Customizable email intelligence</h2>
-      <p class="max-w-lg mx-auto mt-2 text-4xl font-semibold tracking-tight text-center text-balance text-gray-950 sm:text-5xl">
-          The email data you need to take action
-      </p>
-      <div class="grid grid-cols-1 gap-4 mt-10 sm:mt-16 lg:grid-cols-6">
-          <div class="relative lg:col-span-3">
-              <div class="absolute inset-px rounded-lg bg-white max-lg:rounded-t-[2rem] lg:rounded-tl-[2rem]"></div>
-              <div class="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)] max-lg:rounded-t-[calc(2rem+1px)] lg:rounded-tl-[calc(2rem+1px)]">
-                  <div class="flex items-center justify-center object-cover object-left h-64 px-4 bg-gray-50/50">
-                      <div class="opacity-90 w-96">
-                          <label class="block font-medium leading-6 text-gray-700">Email</label>
-                          <div class="relative mt-2 rounded-md shadow-sm">
-                              <input type="email" class="block w-full py-2 pl-4 pr-10 text-red-900 border-0 rounded-md ring-1 ring-inset ring-red-300 placeholder:text-red-300 focus:ring-2 focus:ring-inset focus:ring-red-500 sm:leading-6" readonly="" disabled="" value="john@tempmail.com">
-                              <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                  <svg class="w-5 h-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-<path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd"></path>
+
+<div class="max-w-2xl px-6 mx-auto lg:max-w-7xl lg:px-8">
+        <h2 class="font-semibold text-center text-primary-600 text-base/7">Customizable email intelligence</h2>
+        <p class="max-w-lg mx-auto mt-2 text-4xl font-semibold tracking-tight text-center text-balance text-gray-950 sm:text-5xl">
+            The email data you need to take action
+        </p>
+        <div class="grid grid-cols-1 gap-4 mt-10 sm:mt-16 lg:grid-cols-6">
+            <div class="relative lg:col-span-3">
+                <div class="absolute inset-px rounded-lg bg-white max-lg:rounded-t-[2rem] lg:rounded-tl-[2rem]"></div>
+                <div class="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)] max-lg:rounded-t-[calc(2rem+1px)] lg:rounded-tl-[calc(2rem+1px)]">
+                    <div class="flex items-center justify-center object-cover object-left h-64 px-4 bg-gray-50/50">
+                        <div class="opacity-90 w-96">
+                            <label class="block font-medium leading-6 text-gray-700">Email</label>
+                            <div class="relative mt-2 rounded-md shadow-sm">
+                                <input type="email" class="block w-full py-2 pl-4 pr-10 text-red-900 border-0 rounded-md ring-1 ring-inset ring-red-300 placeholder:text-red-300 focus:ring-2 focus:ring-inset focus:ring-red-500 sm:leading-6" readonly="" disabled="" value="john@tempmail.com">
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                    <svg class="w-5 h-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd"></path>
 </svg>                                </div>
-                          </div>
-                          <div class="flex items-center gap-2 pl-2 mt-2 text-sm">
-                              <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-<path fill-rule="evenodd" d="M3.74 3.749a.75.75 0 0 1 .75.75V15h13.938l-2.47-2.47a.75.75 0 0 1 1.061-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.47-2.47H3.738a.75.75 0 0 1-.75-.75V4.5a.75.75 0 0 1 .75-.751Z" clip-rule="evenodd"></path>
+                            </div>
+                            <div class="flex items-center gap-2 pl-2 mt-2 text-sm">
+                                <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M3.74 3.749a.75.75 0 0 1 .75.75V15h13.938l-2.47-2.47a.75.75 0 0 1 1.061-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.47-2.47H3.738a.75.75 0 0 1-.75-.75V4.5a.75.75 0 0 1 .75-.751Z" clip-rule="evenodd"></path>
 </svg>                                <div class="flex items-center px-2 py-1 bg-gray-100 border border-gray-200 rounded-full">
-                                  <p class="text-gray-800"><code>{"disposable": <span class="font-bold">true</span>}</code></p>
-                              </div>
-                          </div>
-                          <div class="flex items-center gap-2 pl-10 mt-2 text-sm">
-                              <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-<path fill-rule="evenodd" d="M3.74 3.749a.75.75 0 0 1 .75.75V15h13.938l-2.47-2.47a.75.75 0 0 1 1.061-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.47-2.47H3.738a.75.75 0 0 1-.75-.75V4.5a.75.75 0 0 1 .75-.751Z" clip-rule="evenodd"></path>
+                                    <p class="text-gray-800"><code>{"disposable": <span class="font-bold">true</span>}</code></p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 pl-10 mt-2 text-sm">
+                                <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M3.74 3.749a.75.75 0 0 1 .75.75V15h13.938l-2.47-2.47a.75.75 0 0 1 1.061-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.47-2.47H3.738a.75.75 0 0 1-.75-.75V4.5a.75.75 0 0 1 .75-.751Z" clip-rule="evenodd"></path>
 </svg>                                <div class="flex items-center px-4 py-1 border border-red-200 rounded-full bg-red-50">
-                                  <p class="font-bold text-red-900">Block</p>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="p-10 pt-4">
-                      <p class="mt-2 text-xl font-medium tracking-tight text-gray-950">Disposable email detection</p>
-                      <p class="max-w-lg mt-2 text-gray-600 text-sm/6">Automatically identify and block disposable emails using online databases.</p>
-                  </div>
-              </div>
-              <div class="pointer-events-none absolute inset-px rounded-lg shadow ring-1 ring-black/5 max-lg:rounded-t-[2rem] lg:rounded-tl-[2rem]"></div>
-          </div>
+                                    <p class="font-bold text-red-900">Block</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-10 pt-4">
+                        <p class="mt-2 text-xl font-medium tracking-tight text-gray-950">Disposable email detection</p>
+                        <p class="max-w-lg mt-2 text-gray-600 text-sm/6">Automatically identify and block disposable emails using online databases.</p>
+                    </div>
+                </div>
+                <div class="pointer-events-none absolute inset-px rounded-lg shadow ring-1 ring-black/5 max-lg:rounded-t-[2rem] lg:rounded-tl-[2rem]"></div>
+            </div>
 
-          <div class="relative lg:col-span-3">
-              <div class="absolute inset-px rounded-lg bg-white max-lg:rounded-t-[2rem] lg:rounded-tl-[2rem]"></div>
-              <div class="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)]">
-                  <div class="flex items-center justify-center object-cover object-left h-64 px-4 bg-gray-50/50">
-                      <div class="opacity-90 w-96">
-                          <label class="block font-medium leading-6 text-gray-700">Email</label>
-                          <div class="relative mt-2 rounded-md shadow-sm">
-                              <input type="email" class="block w-full py-2 pl-4 pr-10 text-green-900 border-0 rounded-md ring-1 ring-inset ring-green-300 placeholder:text-green-300 focus:ring-2 focus:ring-inset focus:ring-green-500 sm:leading-6" readonly="" disabled="" value="elon@spacex.com">
-                              <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                  <svg class="w-5 h-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-<path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z" clip-rule="evenodd"></path>
+            <div class="relative lg:col-span-3">
+                <div class="absolute inset-px rounded-lg bg-white max-lg:rounded-t-[2rem] lg:rounded-tl-[2rem]"></div>
+                <div class="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)]">
+                    <div class="flex items-center justify-center object-cover object-left h-64 px-4 bg-gray-50/50">
+                        <div class="opacity-90 w-96">
+                            <label class="block font-medium leading-6 text-gray-700">Email</label>
+                            <div class="relative mt-2 rounded-md shadow-sm">
+                                <input type="email" class="block w-full py-2 pl-4 pr-10 text-green-900 border-0 rounded-md ring-1 ring-inset ring-green-300 placeholder:text-green-300 focus:ring-2 focus:ring-inset focus:ring-green-500 sm:leading-6" readonly="" disabled="" value="elon@spacex.com">
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                    <svg class="w-5 h-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z" clip-rule="evenodd"></path>
 </svg>                                </div>
-                          </div>
-                          <div class="flex items-center gap-2 pl-2 mt-2 text-sm">
-                              <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-<path fill-rule="evenodd" d="M3.74 3.749a.75.75 0 0 1 .75.75V15h13.938l-2.47-2.47a.75.75 0 0 1 1.061-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.47-2.47H3.738a.75.75 0 0 1-.75-.75V4.5a.75.75 0 0 1 .75-.751Z" clip-rule="evenodd"></path>
+                            </div>
+                            <div class="flex items-center gap-2 pl-2 mt-2 text-sm">
+                                <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M3.74 3.749a.75.75 0 0 1 .75.75V15h13.938l-2.47-2.47a.75.75 0 0 1 1.061-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.47-2.47H3.738a.75.75 0 0 1-.75-.75V4.5a.75.75 0 0 1 .75-.751Z" clip-rule="evenodd"></path>
 </svg>                                <div class="flex items-center px-2 py-1 bg-gray-100 border border-gray-200 rounded-full">
-                                  <p class="text-gray-800"><code>{"mx_exists": <span class="font-bold">true</span>}</code></p>
-                              </div>
-                          </div>
+                                    <p class="text-gray-800"><code>{"mx_exists": <span class="font-bold">true</span>}</code></p>
+                                </div>
+                            </div>
 
-                          <div class="flex items-center gap-2 pl-2 mt-2 text-sm">
-                              <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-<path fill-rule="evenodd" d="M3.74 3.749a.75.75 0 0 1 .75.75V15h13.938l-2.47-2.47a.75.75 0 0 1 1.061-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.47-2.47H3.738a.75.75 0 0 1-.75-.75V4.5a.75.75 0 0 1 .75-.751Z" clip-rule="evenodd"></path>
+                            <div class="flex items-center gap-2 pl-2 mt-2 text-sm">
+                                <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M3.74 3.749a.75.75 0 0 1 .75.75V15h13.938l-2.47-2.47a.75.75 0 0 1 1.061-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.47-2.47H3.738a.75.75 0 0 1-.75-.75V4.5a.75.75 0 0 1 .75-.751Z" clip-rule="evenodd"></path>
 </svg>                                <div class="flex items-center px-2 py-1 bg-gray-100 border border-gray-200 rounded-full">
-                                  <p class="text-gray-800"><code>{"smtp_valid": <span class="font-bold">true</span>}</code></p>
-                              </div>
-                          </div>
+                                    <p class="text-gray-800"><code>{"smtp_valid": <span class="font-bold">true</span>}</code></p>
+                                </div>
+                            </div>
 
 
-                          <div class="flex items-center gap-2 pl-10 mt-2 text-sm">
-                              <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-<path fill-rule="evenodd" d="M3.74 3.749a.75.75 0 0 1 .75.75V15h13.938l-2.47-2.47a.75.75 0 0 1 1.061-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.47-2.47H3.738a.75.75 0 0 1-.75-.75V4.5a.75.75 0 0 1 .75-.751Z" clip-rule="evenodd"></path>
+                            <div class="flex items-center gap-2 pl-10 mt-2 text-sm">
+                                <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M3.74 3.749a.75.75 0 0 1 .75.75V15h13.938l-2.47-2.47a.75.75 0 0 1 1.061-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.47-2.47H3.738a.75.75 0 0 1-.75-.75V4.5a.75.75 0 0 1 .75-.751Z" clip-rule="evenodd"></path>
 </svg>                                <div class="flex items-center px-4 py-1 border border-green-200 rounded-full bg-green-50">
-                                  <p class="font-bold text-green-900">Ok</p>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="p-10 pt-4">
-                      <p class="mt-2 text-xl font-medium tracking-tight text-gray-950">MX records validation</p>
-                      <p class="max-w-lg mt-2 text-gray-600 text-sm/6">Verify that a domain has an MX record and server is accepting emails.</p>
-                  </div>
-              </div>
-              <div class="absolute rounded-lg shadow pointer-events-none inset-px ring-1 ring-black/5"></div>
-          </div>
-          <div class="relative lg:col-span-3">
-              <div class="absolute inset-px rounded-lg bg-white lg:rounded-tr-[2rem]"></div>
-              <div class="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)]">
-                  <div class="flex items-center justify-center object-cover object-left h-64 px-4 bg-gray-50/50">
-                      <div class="opacity-90 w-96">
-                          <label class="block font-medium leading-6 text-gray-700">Email</label>
-                          <div class="relative mt-2 rounded-md shadow-sm">
-                              <input type="email" class="block w-full py-2 pl-4 pr-10 text-orange-900 border-0 rounded-md ring-1 ring-inset ring-orange-300 placeholder:text-orange-300 focus:ring-2 focus:ring-inset focus:ring-orange-500 sm:leading-6" readonly="" disabled="" value="info@openpanel.com">
-                              <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                  <svg class="w-5 h-5 text-orange-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-<path fill-rule="evenodd" d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd"></path>
+                                    <p class="font-bold text-green-900">Ok</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-10 pt-4">
+                        <p class="mt-2 text-xl font-medium tracking-tight text-gray-950">MX records validation</p>
+                        <p class="max-w-lg mt-2 text-gray-600 text-sm/6">Verify that a domain has an MX record and server is accepting emails.</p>
+                    </div>
+                </div>
+                <div class="absolute rounded-lg shadow pointer-events-none inset-px ring-1 ring-black/5"></div>
+            </div>
+            <div class="relative lg:col-span-3">
+                <div class="absolute inset-px rounded-lg bg-white lg:rounded-tr-[2rem]"></div>
+                <div class="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)]">
+                    <div class="flex items-center justify-center object-cover object-left h-64 px-4 bg-gray-50/50">
+                        <div class="opacity-90 w-96">
+                            <label class="block font-medium leading-6 text-gray-700">Email</label>
+                            <div class="relative mt-2 rounded-md shadow-sm">
+                                <input type="email" class="block w-full py-2 pl-4 pr-10 text-orange-900 border-0 rounded-md ring-1 ring-inset ring-orange-300 placeholder:text-orange-300 focus:ring-2 focus:ring-inset focus:ring-orange-500 sm:leading-6" readonly="" disabled="" value="info@openpanel.com">
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                    <svg class="w-5 h-5 text-orange-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd"></path>
 </svg>                                </div>
-                          </div>
-                          <div class="flex items-center gap-2 pl-2 mt-2 text-sm">
-                              <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-<path fill-rule="evenodd" d="M3.74 3.749a.75.75 0 0 1 .75.75V15h13.938l-2.47-2.47a.75.75 0 0 1 1.061-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.47-2.47H3.738a.75.75 0 0 1-.75-.75V4.5a.75.75 0 0 1 .75-.751Z" clip-rule="evenodd"></path>
+                            </div>
+                            <div class="flex items-center gap-2 pl-2 mt-2 text-sm">
+                                <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M3.74 3.749a.75.75 0 0 1 .75.75V15h13.938l-2.47-2.47a.75.75 0 0 1 1.061-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.47-2.47H3.738a.75.75 0 0 1-.75-.75V4.5a.75.75 0 0 1 .75-.751Z" clip-rule="evenodd"></path>
 </svg>                                <div class="flex items-center px-2 py-1 bg-gray-100 border border-gray-200 rounded-full">
-                                  <p class="text-gray-800"><code>{"new_domain": <span class="font-bold">true</span>}</code></p>
-                              </div>
-                          </div>
-                          <div class="flex items-center gap-2 pl-2 mt-2 text-sm">
-                              <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-<path fill-rule="evenodd" d="M3.74 3.749a.75.75 0 0 1 .75.75V15h13.938l-2.47-2.47a.75.75 0 0 1 1.061-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.47-2.47H3.738a.75.75 0 0 1-.75-.75V4.5a.75.75 0 0 1 .75-.751Z" clip-rule="evenodd"></path>
+                                    <p class="text-gray-800"><code>{"new_domain": <span class="font-bold">true</span>}</code></p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 pl-2 mt-2 text-sm">
+                                <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M3.74 3.749a.75.75 0 0 1 .75.75V15h13.938l-2.47-2.47a.75.75 0 0 1 1.061-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.47-2.47H3.738a.75.75 0 0 1-.75-.75V4.5a.75.75 0 0 1 .75-.751Z" clip-rule="evenodd"></path>
 </svg>                                <div class="flex items-center px-2 py-1 bg-gray-100 border border-gray-200 rounded-full">
-                                  <p class="text-gray-800"><code>{"domain_age_in_days": <span class="font-bold">45</span>}</code></p>
-                              </div>
-                          </div>
-                          <div class="flex items-center gap-2 pl-10 mt-2 text-sm">
-                              <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-<path fill-rule="evenodd" d="M3.74 3.749a.75.75 0 0 1 .75.75V15h13.938l-2.47-2.47a.75.75 0 0 1 1.061-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.47-2.47H3.738a.75.75 0 0 1-.75-.75V4.5a.75.75 0 0 1 .75-.751Z" clip-rule="evenodd"></path>
+                                    <p class="text-gray-800"><code>{"domain_age_in_days": <span class="font-bold">45</span>}</code></p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 pl-10 mt-2 text-sm">
+                                <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M3.74 3.749a.75.75 0 0 1 .75.75V15h13.938l-2.47-2.47a.75.75 0 0 1 1.061-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.47-2.47H3.738a.75.75 0 0 1-.75-.75V4.5a.75.75 0 0 1 .75-.751Z" clip-rule="evenodd"></path>
 </svg>                                <div class="flex items-center px-4 py-1 border border-red-200 rounded-full bg-red-50">
-                                  <p class="font-bold text-red-900">Block</p>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="p-10 pt-4">
-                      <p class="mt-2 text-xl font-medium tracking-tight text-gray-950">WHOIS domain validation </p>
-                      <p class="max-w-lg mt-2 text-gray-600 text-sm/6">Validate domain age and avoid newly registered domains.</p>
-                  </div>
-              </div>
-              <div class="absolute rounded-lg shadow pointer-events-none inset-px ring-1 ring-black/5"></div>
-          </div>
+                                    <p class="font-bold text-red-900">Block</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-10 pt-4">
+                        <p class="mt-2 text-xl font-medium tracking-tight text-gray-950">WHOIS domain validation </p>
+                        <p class="max-w-lg mt-2 text-gray-600 text-sm/6">Validate domain age and avoid newly registered domains.</p>
+                    </div>
+                </div>
+                <div class="absolute rounded-lg shadow pointer-events-none inset-px ring-1 ring-black/5"></div>
+            </div>
 
 
 
 <div class="relative lg:col-span-3">
-              <div class="absolute bg-white rounded-lg inset-px"></div>
-              <div class="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)]">
-                  <div class="flex items-center justify-center object-cover h-64 px-4 bg-gray-50/50">
-                      <div class="opacity-90 w-80">
-                          <label class="block font-medium leading-6 text-gray-700">Email</label>
-                          <div class="relative mt-2 rounded-md shadow-sm">
-                              <input type="email" class="block w-full py-2 pl-4 pr-10 text-red-900 border-0 rounded-md ring-1 ring-inset ring-red-300 placeholder:text-red-300 focus:ring-2 focus:ring-inset focus:ring-red-500 sm:leading-6" readonly="" disabled="" value="hello@viagrashop123.com">
-                              <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                  <svg class="w-5 h-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-<path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd"></path>
+                <div class="absolute bg-white rounded-lg inset-px"></div>
+                <div class="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)]">
+                    <div class="flex items-center justify-center object-cover h-64 px-4 bg-gray-50/50">
+                        <div class="opacity-90 w-80">
+                            <label class="block font-medium leading-6 text-gray-700">Email</label>
+                            <div class="relative mt-2 rounded-md shadow-sm">
+                                <input type="email" class="block w-full py-2 pl-4 pr-10 text-red-900 border-0 rounded-md ring-1 ring-inset ring-red-300 placeholder:text-red-300 focus:ring-2 focus:ring-inset focus:ring-red-500 sm:leading-6" readonly="" disabled="" value="hello@viagrashop123.com">
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                    <svg class="w-5 h-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd"></path>
 </svg>                                </div>
-                          </div>
-                          <div class="flex items-center gap-2 pl-2 mt-2 text-sm">
-                              <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-<path fill-rule="evenodd" d="M3.74 3.749a.75.75 0 0 1 .75.75V15h13.938l-2.47-2.47a.75.75 0 0 1 1.061-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.47-2.47H3.738a.75.75 0 0 1-.75-.75V4.5a.75.75 0 0 1 .75-.751Z" clip-rule="evenodd"></path>
+                            </div>
+                            <div class="flex items-center gap-2 pl-2 mt-2 text-sm">
+                                <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M3.74 3.749a.75.75 0 0 1 .75.75V15h13.938l-2.47-2.47a.75.75 0 0 1 1.061-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.47-2.47H3.738a.75.75 0 0 1-.75-.75V4.5a.75.75 0 0 1 .75-.751Z" clip-rule="evenodd"></path>
 </svg>                                <div class="flex items-center px-2 py-1 bg-gray-100 border border-gray-200 rounded-full">
-                                  <p class="text-gray-800"><code><span class="bg-green-200">hello</span>@<span class="bg-red-200">viagra</span><span class="bg-green-200">shop123.com</span></code></p>
-                              </div>
-                          </div>
-                          <div class="flex items-center gap-2 pl-10 mt-2 text-sm">
-                              <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-<path fill-rule="evenodd" d="M3.74 3.749a.75.75 0 0 1 .75.75V15h13.938l-2.47-2.47a.75.75 0 0 1 1.061-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.47-2.47H3.738a.75.75 0 0 1-.75-.75V4.5a.75.75 0 0 1 .75-.751Z" clip-rule="evenodd"></path>
+                                    <p class="text-gray-800"><code><span class="bg-green-200">hello</span>@<span class="bg-red-200">viagra</span><span class="bg-green-200">shop123.com</span></code></p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 pl-10 mt-2 text-sm">
+                                <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M3.74 3.749a.75.75 0 0 1 .75.75V15h13.938l-2.47-2.47a.75.75 0 0 1 1.061-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.47-2.47H3.738a.75.75 0 0 1-.75-.75V4.5a.75.75 0 0 1 .75-.751Z" clip-rule="evenodd"></path>
 </svg>                                <div class="flex items-center px-4 py-1 border border-red-200 rounded-full bg-red-50">
-                                  <p class="font-bold text-red-900">Spam Keyword</p>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="p-10 pt-4">
-                      <p class="mt-2 text-xl font-medium tracking-tight text-gray-950">Spam keywords check</p>
-                      <p class="max-w-lg mt-2 text-gray-600 text-sm/6">Validate email addresses against your custom spam keywords lists.</p>
-                  </div>
-              </div>
-              <div class="pointer-events-none absolute inset-px rounded-lg shadow ring-1 ring-black/5 lg:rounded-br-[2rem]"></div>
-          </div>
+                                    <p class="font-bold text-red-900">Spam Keyword</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-10 pt-4">
+                        <p class="mt-2 text-xl font-medium tracking-tight text-gray-950">Spam keywords check</p>
+                        <p class="max-w-lg mt-2 text-gray-600 text-sm/6">Validate email addresses against your custom spam keywords lists.</p>
+                    </div>
+                </div>
+                <div class="pointer-events-none absolute inset-px rounded-lg shadow ring-1 ring-black/5 lg:rounded-br-[2rem]"></div>
+            </div>
 
 
 
 
 
-          <div class="relative lg:col-span-2">
-              <div class="absolute inset-px rounded-lg bg-white lg:rounded-bl-[2rem]"></div>
-              <div class="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)]">
-                  <div class="flex items-center justify-center object-cover h-64 px-4 bg-gray-50/50">
-                      <div class="opacity-90 w-80">
-                          <label class="block font-medium leading-6 text-gray-700">Email</label>
-                          <div class="relative mt-2 rounded-md shadow-sm">
-                              <input type="email" class="block w-full py-2 pl-4 pr-10 text-gray-900 border-0 rounded-md ring-1 ring-inset ring-gray-300 placeholder:text-gray-300 focus:ring-2 focus:ring-inset focus:ring-gray-500 sm:leading-6" readonly="" disabled="" value="spammer@openpanel.co">
-                              <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                  <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-<path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm11.378-3.917c-.89-.777-2.366-.777-3.255 0a.75.75 0 0 1-.988-1.129c1.454-1.272 3.776-1.272 5.23 0 1.513 1.324 1.513 3.518 0 4.842a3.75 3.75 0 0 1-.837.552c-.676.328-1.028.774-1.028 1.152v.75a.75.75 0 0 1-1.5 0v-.75c0-1.279 1.06-2.107 1.875-2.502.182-.088.351-.199.503-.331.83-.727.83-1.857 0-2.584ZM12 18a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd"></path>
+            <div class="relative lg:col-span-2">
+                <div class="absolute inset-px rounded-lg bg-white lg:rounded-bl-[2rem]"></div>
+                <div class="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)]">
+                    <div class="flex items-center justify-center object-cover h-64 px-4 bg-gray-50/50">
+                        <div class="opacity-90 w-80">
+                            <label class="block font-medium leading-6 text-gray-700">Email</label>
+                            <div class="relative mt-2 rounded-md shadow-sm">
+                                <input type="email" class="block w-full py-2 pl-4 pr-10 text-gray-900 border-0 rounded-md ring-1 ring-inset ring-gray-300 placeholder:text-gray-300 focus:ring-2 focus:ring-inset focus:ring-gray-500 sm:leading-6" readonly="" disabled="" value="spammer@openpanel.co">
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                    <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm11.378-3.917c-.89-.777-2.366-.777-3.255 0a.75.75 0 0 1-.988-1.129c1.454-1.272 3.776-1.272 5.23 0 1.513 1.324 1.513 3.518 0 4.842a3.75 3.75 0 0 1-.837.552c-.676.328-1.028.774-1.028 1.152v.75a.75.75 0 0 1-1.5 0v-.75c0-1.279 1.06-2.107 1.875-2.502.182-.088.351-.199.503-.331.83-.727.83-1.857 0-2.584ZM12 18a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd"></path>
 </svg>                                </div>
-                          </div>
-                          <div class="flex items-center gap-2 pl-2 mt-2 text-sm">
-                              <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-<path fill-rule="evenodd" d="M3.74 3.749a.75.75 0 0 1 .75.75V15h13.938l-2.47-2.47a.75.75 0 0 1 1.061-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.47-2.47H3.738a.75.75 0 0 1-.75-.75V4.5a.75.75 0 0 1 .75-.751Z" clip-rule="evenodd"></path>
+                            </div>
+                            <div class="flex items-center gap-2 pl-2 mt-2 text-sm">
+                                <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M3.74 3.749a.75.75 0 0 1 .75.75V15h13.938l-2.47-2.47a.75.75 0 0 1 1.061-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.47-2.47H3.738a.75.75 0 0 1-.75-.75V4.5a.75.75 0 0 1 .75-.751Z" clip-rule="evenodd"></path>
 </svg>                                <div class="flex items-center px-2 py-1 bg-gray-100 border border-gray-200 rounded-full">
-                                  <p class="text-gray-800"><code>{"reputation_penalty": <span class="font-bold">17.5</span>}</code></p>
-                              </div>
-                          </div>
+                                    <p class="text-gray-800"><code>{"reputation_penalty": <span class="font-bold">17.5</span>}</code></p>
+                                </div>
+                            </div>
 <div class="flex items-center gap-2 pl-10 mt-2 text-sm">
-                              <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-<path fill-rule="evenodd" d="M3.74 3.749a.75.75 0 0 1 .75.75V15h13.938l-2.47-2.47a.75.75 0 0 1 1.061-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.47-2.47H3.738a.75.75 0 0 1-.75-.75V4.5a.75.75 0 0 1 .75-.751Z" clip-rule="evenodd"></path>
+                                <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M3.74 3.749a.75.75 0 0 1 .75.75V15h13.938l-2.47-2.47a.75.75 0 0 1 1.061-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.47-2.47H3.738a.75.75 0 0 1-.75-.75V4.5a.75.75 0 0 1 .75-.751Z" clip-rule="evenodd"></path>
 </svg>                                <div class="flex items-center px-4 py-1 border border-red-200 rounded-full bg-red-50">
-                                  <p class="font-bold text-red-900">Block</p>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="p-10 pt-4">
-                      <p class="mt-2 text-xl font-medium tracking-tight text-gray-950">Spam Lists</p>
-                      <p class="max-w-lg mt-2 text-gray-600 text-sm/6">Maintain your own spam list for users to report domains.</p>
-                  </div>
-              </div>
-              <div class="absolute rounded-lg shadow pointer-events-none inset-px ring-1 ring-black/5"></div>
-          </div>
+                                    <p class="font-bold text-red-900">Block</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-10 pt-4">
+                        <p class="mt-2 text-xl font-medium tracking-tight text-gray-950">Spam Lists</p>
+                        <p class="max-w-lg mt-2 text-gray-600 text-sm/6">Maintain your own spam list for users to report domains.</p>
+                    </div>
+                </div>
+                <div class="absolute rounded-lg shadow pointer-events-none inset-px ring-1 ring-black/5"></div>
+            </div>
 
 
 
-          <div class="relative lg:col-span-2">
-              <div class="absolute inset-px rounded-lg bg-white lg:rounded-bl-[2rem]"></div>
-              <div class="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)]">
-                  <div class="flex items-center justify-center object-cover h-64 px-4 bg-gray-50/50">
-                      <div class="opacity-90 w-80">
-                          <label class="block font-medium leading-6 text-gray-700">Email</label>
-                          <div class="relative mt-2 rounded-md shadow-sm">
-                              <input type="email" class="block w-full py-2 pl-4 pr-10 text-gray-900 border-0 rounded-md ring-1 ring-inset ring-gray-300 placeholder:text-gray-300 focus:ring-2 focus:ring-inset focus:ring-gray-500 sm:leading-6" readonly="" disabled="" value="info@openpanel.com">
-                              <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                  <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-<path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm11.378-3.917c-.89-.777-2.366-.777-3.255 0a.75.75 0 0 1-.988-1.129c1.454-1.272 3.776-1.272 5.23 0 1.513 1.324 1.513 3.518 0 4.842a3.75 3.75 0 0 1-.837.552c-.676.328-1.028.774-1.028 1.152v.75a.75.75 0 0 1-1.5 0v-.75c0-1.279 1.06-2.107 1.875-2.502.182-.088.351-.199.503-.331.83-.727.83-1.857 0-2.584ZM12 18a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd"></path>
+            <div class="relative lg:col-span-2">
+                <div class="absolute inset-px rounded-lg bg-white lg:rounded-bl-[2rem]"></div>
+                <div class="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)]">
+                    <div class="flex items-center justify-center object-cover h-64 px-4 bg-gray-50/50">
+                        <div class="opacity-90 w-80">
+                            <label class="block font-medium leading-6 text-gray-700">Email</label>
+                            <div class="relative mt-2 rounded-md shadow-sm">
+                                <input type="email" class="block w-full py-2 pl-4 pr-10 text-gray-900 border-0 rounded-md ring-1 ring-inset ring-gray-300 placeholder:text-gray-300 focus:ring-2 focus:ring-inset focus:ring-gray-500 sm:leading-6" readonly="" disabled="" value="info@openpanel.com">
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                    <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm11.378-3.917c-.89-.777-2.366-.777-3.255 0a.75.75 0 0 1-.988-1.129c1.454-1.272 3.776-1.272 5.23 0 1.513 1.324 1.513 3.518 0 4.842a3.75 3.75 0 0 1-.837.552c-.676.328-1.028.774-1.028 1.152v.75a.75.75 0 0 1-1.5 0v-.75c0-1.279 1.06-2.107 1.875-2.502.182-.088.351-.199.503-.331.83-.727.83-1.857 0-2.584ZM12 18a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd"></path>
 </svg>                                </div>
-                          </div>
-                          <div class="flex items-center gap-2 pl-2 mt-2 text-sm">
-                              <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-<path fill-rule="evenodd" d="M3.74 3.749a.75.75 0 0 1 .75.75V15h13.938l-2.47-2.47a.75.75 0 0 1 1.061-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.47-2.47H3.738a.75.75 0 0 1-.75-.75V4.5a.75.75 0 0 1 .75-.751Z" clip-rule="evenodd"></path>
+                            </div>
+                            <div class="flex items-center gap-2 pl-2 mt-2 text-sm">
+                                <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M3.74 3.749a.75.75 0 0 1 .75.75V15h13.938l-2.47-2.47a.75.75 0 0 1 1.061-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.47-2.47H3.738a.75.75 0 0 1-.75-.75V4.5a.75.75 0 0 1 .75-.751Z" clip-rule="evenodd"></path>
 </svg>                                <div class="flex items-center px-2 py-1 bg-gray-100 border border-gray-200 rounded-full">
-                                  <p class="text-gray-800"><code>{"whitelisted": <span class="font-bold">true</span>}</code></p>
-                              </div>
-                          </div>
-                          <div class="flex items-center gap-2 pl-10 mt-2 text-sm">
-                              <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-<path fill-rule="evenodd" d="M3.74 3.749a.75.75 0 0 1 .75.75V15h13.938l-2.47-2.47a.75.75 0 0 1 1.061-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.47-2.47H3.738a.75.75 0 0 1-.75-.75V4.5a.75.75 0 0 1 .75-.751Z" clip-rule="evenodd"></path>
+                                    <p class="text-gray-800"><code>{"whitelisted": <span class="font-bold">true</span>}</code></p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 pl-10 mt-2 text-sm">
+                                <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M3.74 3.749a.75.75 0 0 1 .75.75V15h13.938l-2.47-2.47a.75.75 0 0 1 1.061-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.47-2.47H3.738a.75.75 0 0 1-.75-.75V4.5a.75.75 0 0 1 .75-.751Z" clip-rule="evenodd"></path>
 </svg>                                <div class="flex items-center px-4 py-1 border border-green-200 rounded-full bg-green-50">
-                                  <p class="font-bold text-green-900">Accept</p>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="p-10 pt-4">
-                      <p class="mt-2 text-xl font-medium tracking-tight text-gray-950">Custom Whitelist</p>
-                      <p class="max-w-lg mt-2 text-gray-600 text-sm/6">Maintain your own lists with custom score.</p>
-                  </div>
-              </div>
-              <div class="absolute rounded-lg shadow pointer-events-none inset-px ring-1 ring-black/5"></div>
-          </div>
+                                    <p class="font-bold text-green-900">Accept</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-10 pt-4">
+                        <p class="mt-2 text-xl font-medium tracking-tight text-gray-950">Custom Whitelist</p>
+                        <p class="max-w-lg mt-2 text-gray-600 text-sm/6">Maintain your own lists with custom score.</p>
+                    </div>
+                </div>
+                <div class="absolute rounded-lg shadow pointer-events-none inset-px ring-1 ring-black/5"></div>
+            </div>
 
 
-          <div class="relative lg:col-span-2">
-              <div class="absolute inset-px rounded-lg bg-white lg:rounded-bl-[2rem]"></div>
-              <div class="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)]">
-                  <div class="flex items-center justify-center object-cover h-64 px-4 bg-gray-50/50">
-                      <div class="opacity-90 w-80">
-                          <label class="block font-medium leading-6 text-gray-700">Email</label>
-                          <div class="relative mt-2 rounded-md shadow-sm">
-                              <input type="email" class="block w-full py-2 pl-4 pr-10 text-gray-900 border-0 rounded-md ring-1 ring-inset ring-gray-300 placeholder:text-gray-300 focus:ring-2 focus:ring-inset focus:ring-gray-500 sm:leading-6" readonly="" disabled="" value="info@openpanel.org">
-                              <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                  <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-<path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm11.378-3.917c-.89-.777-2.366-.777-3.255 0a.75.75 0 0 1-.988-1.129c1.454-1.272 3.776-1.272 5.23 0 1.513 1.324 1.513 3.518 0 4.842a3.75 3.75 0 0 1-.837.552c-.676.328-1.028.774-1.028 1.152v.75a.75.75 0 0 1-1.5 0v-.75c0-1.279 1.06-2.107 1.875-2.502.182-.088.351-.199.503-.331.83-.727.83-1.857 0-2.584ZM12 18a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd"></path>
+            <div class="relative lg:col-span-2">
+                <div class="absolute inset-px rounded-lg bg-white lg:rounded-bl-[2rem]"></div>
+                <div class="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)]">
+                    <div class="flex items-center justify-center object-cover h-64 px-4 bg-gray-50/50">
+                        <div class="opacity-90 w-80">
+                            <label class="block font-medium leading-6 text-gray-700">Email</label>
+                            <div class="relative mt-2 rounded-md shadow-sm">
+                                <input type="email" class="block w-full py-2 pl-4 pr-10 text-gray-900 border-0 rounded-md ring-1 ring-inset ring-gray-300 placeholder:text-gray-300 focus:ring-2 focus:ring-inset focus:ring-gray-500 sm:leading-6" readonly="" disabled="" value="info@openpanel.org">
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                    <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm11.378-3.917c-.89-.777-2.366-.777-3.255 0a.75.75 0 0 1-.988-1.129c1.454-1.272 3.776-1.272 5.23 0 1.513 1.324 1.513 3.518 0 4.842a3.75 3.75 0 0 1-.837.552c-.676.328-1.028.774-1.028 1.152v.75a.75.75 0 0 1-1.5 0v-.75c0-1.279 1.06-2.107 1.875-2.502.182-.088.351-.199.503-.331.83-.727.83-1.857 0-2.584ZM12 18a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd"></path>
 </svg>                                </div>
-                          </div>
-                          <div class="flex items-center gap-2 pl-2 mt-2 text-sm">
-                              <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-<path fill-rule="evenodd" d="M3.74 3.749a.75.75 0 0 1 .75.75V15h13.938l-2.47-2.47a.75.75 0 0 1 1.061-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.47-2.47H3.738a.75.75 0 0 1-.75-.75V4.5a.75.75 0 0 1 .75-.751Z" clip-rule="evenodd"></path>
+                            </div>
+                            <div class="flex items-center gap-2 pl-2 mt-2 text-sm">
+                                <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M3.74 3.749a.75.75 0 0 1 .75.75V15h13.938l-2.47-2.47a.75.75 0 0 1 1.061-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.47-2.47H3.738a.75.75 0 0 1-.75-.75V4.5a.75.75 0 0 1 .75-.751Z" clip-rule="evenodd"></path>
 </svg>                                <div class="flex items-center px-2 py-1 bg-gray-100 border border-gray-200 rounded-full">
-                                  <p class="text-gray-800"><code>{"blacklisted": <span class="font-bold">true</span>}</code></p>
-                              </div>
-                          </div>
+                                    <p class="text-gray-800"><code>{"blacklisted": <span class="font-bold">true</span>}</code></p>
+                                </div>
+                            </div>
 <div class="flex items-center gap-2 pl-10 mt-2 text-sm">
-                              <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-<path fill-rule="evenodd" d="M3.74 3.749a.75.75 0 0 1 .75.75V15h13.938l-2.47-2.47a.75.75 0 0 1 1.061-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.47-2.47H3.738a.75.75 0 0 1-.75-.75V4.5a.75.75 0 0 1 .75-.751Z" clip-rule="evenodd"></path>
+                                <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M3.74 3.749a.75.75 0 0 1 .75.75V15h13.938l-2.47-2.47a.75.75 0 0 1 1.061-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.47-2.47H3.738a.75.75 0 0 1-.75-.75V4.5a.75.75 0 0 1 .75-.751Z" clip-rule="evenodd"></path>
 </svg>                                <div class="flex items-center px-4 py-1 border border-red-200 rounded-full bg-red-50">
-                                  <p class="font-bold text-red-900">Block</p>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="p-10 pt-4">
-                      <p class="mt-2 text-xl font-medium tracking-tight text-gray-950">Custom Blacklist</p>
-                      <p class="max-w-lg mt-2 text-gray-600 text-sm/6">Maintain your own lists with custom score.</p>
-                  </div>
-              </div>
-              <div class="absolute rounded-lg shadow pointer-events-none inset-px ring-1 ring-black/5"></div>
-          </div>
+                                    <p class="font-bold text-red-900">Block</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-10 pt-4">
+                        <p class="mt-2 text-xl font-medium tracking-tight text-gray-950">Custom Blacklist</p>
+                        <p class="max-w-lg mt-2 text-gray-600 text-sm/6">Maintain your own lists with custom score.</p>
+                    </div>
+                </div>
+                <div class="absolute rounded-lg shadow pointer-events-none inset-px ring-1 ring-black/5"></div>
+            </div>
 
 
 
 
-      </div>
-  </div>
+        </div>
+    </div>
 
 </section>
+
 
 
 
