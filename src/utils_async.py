@@ -1,12 +1,13 @@
 import re
 import aiodns
 import asyncio
-import smtplib
+import aiosmtplib
 import dns.resolver
 from datetime import datetime, timezone
 from concurrent.futures import ThreadPoolExecutor
 import whois
 from src.constants import *
+from functools import lru_cache
 
 resolver = aiodns.DNSResolver()
 executor = ThreadPoolExecutor()
@@ -40,28 +41,24 @@ async def check_mx(domain: str) -> bool:
 
 async def smtp_check(email: str) -> bool:
     domain = email.split('@')[1]
-    logger.info(f"Performing SMTP check for email: {email}")
-    def inner():
-        try:
-            records = dns.resolver.resolve(domain, 'MX')
-            mx = str(records[0].exchange)
-            logger.info(f"Using MX server {mx} for domain {domain}")
-            server = smtplib.SMTP(timeout=2)
-            server.connect(mx)
-            server.helo()
-            server.mail("noreply@yourapi.com")
-            code, _ = server.rcpt(email)
-            server.quit()
-            valid = code == 250
-            if valid:
-                logger.info(f"SMTP check passed for email {email} (code {code})")
-            else:
-                logger.warning(f"SMTP check failed for email {email} (code {code})")
-            return valid
-        except Exception as e:
-            logger.error(f"SMTP check exception for {email}: {e}")
-            return False
-    return await asyncio.get_event_loop().run_in_executor(executor, inner)
+    try:
+        mx_records = await resolver.query(domain, 'MX')
+        mx_host = str(mx_records[0].host)
+        smtp = aiosmtplib.SMTP(hostname=mx_host, timeout=2)
+        await smtp.connect()
+        await smtp.helo()
+        await smtp.mail("noreply@yourapi.com")
+        code, _ = await smtp.rcpt(email)
+        await smtp.quit()
+        return code == 250
+    except Exception:
+        return False
+
+
+# cache domain
+@lru_cache(maxsize=1000)
+def cached_domain_age(domain):
+    return asyncio.run(is_new_domain(domain))
 
 async def is_new_domain(domain: str, threshold_days=30) -> bool:
     logger.info(f"Checking if domain is new (threshold {threshold_days} days): {domain}")
