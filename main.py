@@ -55,7 +55,7 @@ BANNER = r"""
 ---------------------------------------------------------
 """
 
-logger.info("\n" + BANNER)
+logger.debug("\n" + BANNER)
 
 DEFAULT_SCORES = {
     "base": 50,
@@ -78,12 +78,12 @@ def load_scores(config_path: PathLib = CONFIG_SCORES_PATH) -> dict:
                 user_scores = json.load(f)
             merged = DEFAULT_SCORES.copy()
             merged.update(user_scores)
-            logger.info(f"Loaded custom scores from {config_path}")
+            logger.debug(f"Loaded custom scores from {config_path}")
             return merged
         except Exception as e:
             logger.error(f"Failed to load scores config: {e}")
     else:
-        logger.info(f"No custom scores config found at {config_path}, using defaults.")
+        logger.debug(f"No custom scores config found at {config_path}, using defaults.")
     return DEFAULT_SCORES.copy()
 
 # on startup
@@ -108,17 +108,17 @@ async def filter_email(data: EmailInput):
         mx_task = check_mx(domain)
         smtp_task = smtp_check(email)
         new_domain_task = cached_domain_age(domain)
-        gibberish_task = check_gibberish(domain)
 
         # Sync checks
         disposable = is_disposable(domain)
         blacklisted = is_blacklisted(domain)
         whitelisted = is_whitelisted(domain)
         spam_keywords = contains_spam_keywords(email)
+        is_gibberish = check_gibberish(domain)
 
         # Gather results concurrently
-        mx_exists, is_gibberish, smtp_valid, (new_domain, domain_age_in_days) = await asyncio.gather(
-            mx_task, gibberish_task, smtp_task, new_domain_task
+        mx_exists, smtp_valid, (new_domain, domain_age_in_days) = await asyncio.gather(
+            mx_task, smtp_task, new_domain_task
         )
 
         # Log domain check and reputation penalty
@@ -148,7 +148,7 @@ async def filter_email(data: EmailInput):
 
         verdict = "accepted" if score >= 60 else "rejected"
 
-        logger.info(f"Filter result for {email} - score: {score}, verdict: {verdict}")
+        logger.debug(f"Filter result for {email} - score: {score}, verdict: {verdict}")
 
         return {
             "email": email,
@@ -174,7 +174,7 @@ async def filter_email(data: EmailInput):
 @app.post("/feedback/spam")
 async def report_spam(data: FeedbackInput):
     domain = data.email.split("@")[1].lower()
-    logger.info(f"Marking domain as spam: {domain}")
+    logger.debug(f"Marking domain as spam: {domain}")
     mark_domain_as_spam(domain)
     return {"message": f"Domain {domain} marked as spam. Thank you!"}
 
@@ -182,7 +182,7 @@ async def report_spam(data: FeedbackInput):
 @app.post("/whitelist")
 def add_whitelist(domain: str = Query(...)):
     domain = domain.lower()
-    logger.info(f"Adding domain to whitelist: {domain}")
+    logger.debug(f"Adding domain to whitelist: {domain}")
     if domain in load_list("whitelist"):
         logger.warning(f"Domain already whitelisted: {domain}")
         raise HTTPException(status_code=400, detail="Domain already whitelisted.")
@@ -190,26 +190,26 @@ def add_whitelist(domain: str = Query(...)):
         logger.warning(f"Domain is blacklisted, cannot whitelist without removal: {domain}")
         raise HTTPException(status_code=400, detail="Domain is blacklisted. Remove it before adding to whitelist.")
     add_to_list("whitelist", domain)
-    logger.info(f"Domain added to whitelist: {domain}")
+    logger.debug(f"Domain added to whitelist: {domain}")
     return {"message": f"{domain} added to whitelist."}
 
 
 @app.delete("/whitelist")
 def delete_whitelist(domain: str = Query(...)):
     domain = domain.lower()
-    logger.info(f"Removing domain from whitelist: {domain}")
+    logger.debug(f"Removing domain from whitelist: {domain}")
     if domain not in load_list("whitelist"):
         logger.warning(f"Domain not found in whitelist: {domain}")
         raise HTTPException(status_code=404, detail="Domain not in whitelist.")
     remove_from_list("whitelist", domain)
-    logger.info(f"Domain removed from whitelist: {domain}")
+    logger.debug(f"Domain removed from whitelist: {domain}")
     return {"message": f"{domain} removed from whitelist."}
 
 
 @app.post("/blacklist")
 def add_blacklist(domain: str = Query(...)):
     domain = domain.lower()
-    logger.info(f"Adding domain to blacklist: {domain}")
+    logger.debug(f"Adding domain to blacklist: {domain}")
     if domain in load_list("blacklist"):
         logger.warning(f"Domain already blacklisted: {domain}")
         raise HTTPException(status_code=400, detail="Domain already blacklisted.")
@@ -217,32 +217,32 @@ def add_blacklist(domain: str = Query(...)):
         logger.warning(f"Domain is whitelisted, cannot blacklist without removal: {domain}")
         raise HTTPException(status_code=400, detail="Domain is whitelisted. Remove it before adding to blacklist.")
     add_to_list("blacklist", domain)
-    logger.info(f"Domain added to blacklist: {domain}")
+    logger.debug(f"Domain added to blacklist: {domain}")
     return {"message": f"{domain} added to blacklist."}
 
 
 @app.delete("/blacklist")
 def delete_blacklist(domain: str = Query(...)):
     domain = domain.lower()
-    logger.info(f"Removing domain from blacklist: {domain}")
+    logger.debug(f"Removing domain from blacklist: {domain}")
     if domain not in load_list("blacklist"):
         logger.warning(f"Domain not found in blacklist: {domain}")
         raise HTTPException(status_code=404, detail="Domain not in blacklist.")
     remove_from_list("blacklist", domain)
-    logger.info(f"Domain removed from blacklist: {domain}")
+    logger.debug(f"Domain removed from blacklist: {domain}")
     return {"message": f"{domain} removed from blacklist."}
 
 
 @app.get("/lists/{list_name}")
 def get_list(list_name: str = Path(..., description="Name of the list to retrieve")):
     list_name = list_name.lower()
-    logger.info(f"Fetching list: {list_name}")
+    logger.debug(f"Fetching list: {list_name}")
     if list_name not in LIST_FILES:
         logger.warning(f"Requested list not found: {list_name}")
         raise HTTPException(status_code=404, detail="List not found.")
     try:
         items = sorted(load_list(list_name))
-        logger.info(f"Loaded {len(items)} items from list {list_name}")
+        logger.debug(f"Loaded {len(items)} items from list {list_name}")
         return {
             "list": list_name,
             "items": items
@@ -254,7 +254,7 @@ def get_list(list_name: str = Path(..., description="Name of the list to retriev
 
 @app.get("/lists")
 def get_all_lists():
-    logger.info("Fetching all lists")
+    logger.debug("Fetching all lists")
     result = {}
     for name in LIST_FILES:
         try:
@@ -267,13 +267,13 @@ def get_all_lists():
 
 @app.delete("/lists/{list_name}")
 def clear_list(list_name: str):
-    logger.info(f"Clearing list: {list_name}")
+    logger.debug(f"Clearing list: {list_name}")
     if list_name not in LIST_FILES:
         logger.warning(f"List not found for clearing: {list_name}")
         raise HTTPException(status_code=404, detail="List not found.")
     _loaded_sets[list_name] = set()
     save_list(list_name)
-    logger.info(f"List cleared: {list_name}")
+    logger.debug(f"List cleared: {list_name}")
     return {"message": f"{list_name} cleared."}
 
 
@@ -302,7 +302,7 @@ def update_scores(new_scores: dict = Body(..., example=DEFAULT_SCORES)):
         with CONFIG_SCORES_PATH.open("w") as f:
             json.dump(new_scores, f, indent=4)
 
-        logger.info(f"User updated scores saved to {CONFIG_SCORES_PATH}. App restart required to apply changes.")
+        logger.debug(f"User updated scores saved to {CONFIG_SCORES_PATH}. App restart required to apply changes.")
 
         return {
             "message": "Scores updated successfully. Please restart the application to apply changes.",
@@ -323,7 +323,7 @@ def restore_default_scores():
         with CONFIG_SCORES_PATH.open("w") as f:
             json.dump(DEFAULT_SCORES, f, indent=4)
 
-        logger.info(f"Scores restored to default and saved to {CONFIG_SCORES_PATH}. App restart required to apply changes.")
+        logger.debug(f"Scores restored to default and saved to {CONFIG_SCORES_PATH}. App restart required to apply changes.")
 
         return {
             "message": "Scores restored to default. Please restart the application to apply changes.",
