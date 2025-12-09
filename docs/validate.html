@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Validate Email address - EmailFilter</title>
+
+  <!-- SEO -->
+  <meta name="description" content="EmailFilter is an open-source, privacy-friendly, self-hosted email validation service that checks deliverability, MX records, syntax, and disposable email providers." />
+  <meta name="keywords" content="email validator, open source email validation, self hosted email verification, email filter, MX check, disposable email detection, email hygiene" />
+  <meta name="author" content="Stefan Pejcic" />
+  <link rel="canonical" href="https://emailfilter.pejcic.rs" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="EmailFilter – Open-source, Self-hosted Email Validation" />
+  <meta property="og:description" content="Validate email addresses with a self-hosted, open-source solution that respects your privacy." />
+  <meta property="og:url" content="https://emailfilter.pejcic.rs" />
+  <meta property="og:image" content="https://emailfilter.pejcic.rs/og-image.png" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="EmailFilter – Open-source Email Validator" />
+  <meta name="twitter:description" content="A privacy-first, self-hosted tool for accurate email address validation." />
+  <meta name="twitter:image" content="https://emailfilter.pejcic.rs/og-image.png" />
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+
+<body class="bg-white text-gray-900">
+
+  <!-- Header -->
+  <header class="w-full bg-white shadow-sm fixed top-0 left-0 z-50">
+      <div class="container mx-auto flex items-center justify-between py-4 px-6">
+        <a href="." class="text-2xl font-bold text-gray-900">📨 <span class="hidden sm:inline">EmailFilter</span></a>
+        <nav class="space-x-8">
+          <a href="/index.html#features" class="text-gray-600 hover:text-gray-900">Features</a>
+          <a href="/docs/" class="text-gray-600 hover:text-gray-900">Docs</a>
+          <a href="/validate.html" class="px-3 py-2 text-sm font-semibold text-white transition-colors bg-gray-800 rounded-lg outline-2 outline-offset-2 hover:bg-gray-900 active:bg-gray-800 active:text-white/80">Validate email</a>
+          <a href="https://github.com/stefanpejcic/EmailFilter" target="_blank" class="text-gray-600 hover:text-gray-900 inline-flex gap-1 items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"></path></svg>
+            <span class="hidden sm:inline">Github</span></a>
+        </nav>
+      </div>
+  </header>
+
+
+
+<div class="bg-gray-50 relative overflow-hidden bg-white isolate">
+  <div class="px-6 py-24 sm:px-6 sm:py-32 lg:px-8">
+    <div class="max-w-2xl mx-auto text-center">
+      <div class="inline-block px-4 py-1 mb-2 text-xs font-medium rounded-full bg-gray-100">Self-Hosted UserCheck Alternative</div>
+      <h2 class="text-4xl font-semibold tracking-tight text-gray-900 text-balance sm:text-5xl"> Email Validation API</h2>
+      <p class="max-w-lg mx-auto mt-6 text-xl text-gray-700 text-pretty">Verify and filter email addresses with one API call. ✌️</p>
+    <div>    
+    <p class="mt-4 text-sm text-gray-500">Perform syntax validation, domain checks, and MX/server-level verification - all without exposing your data to any third-party APIs.</p>
+      <div class="max-w-2xl mx-auto mt-8">
+        <form action="http://emailfilter-api.pejcic.rs:8080/" method="POST">
+            <label for="email" class="sr-only">Email address</label>
+            <div class="flex mt-2 rounded-md shadow-sm">
+                <div class="relative flex items-stretch flex-grow focus-within:z-10">
+                    <input type="text" name="input" id="input" class="block w-full px-4 py-4 text-gray-900 border-0 rounded-none rounded-l-md ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6" value="" required="" placeholder="Enter an email address to test" style="padding-right: 44.2667px !important;" data-protonpass-base-css="{&quot;padding-right&quot;:&quot;&quot;}">
+                </div>
+                <button type="submit" class="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-6 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                    Check
+                </button>
+            </div>
+        </form>
+      </div>
+    </div>
+   </div>
+   </div>
+</div>
+
+
+
+</body>
+</html>
+  
