@@ -34,7 +34,7 @@ def get_domain_set(list_name: str) -> set:
     return _cached_lists[list_name]
 
 
-async def check_gibberish(email: str) -> bool:
+def check_gibberish(email: str) -> bool:
     local_part = email.split("@")[0]
     logger.debug(f"Checking if '{local_part}' is gibberish")
     if re.search(r"[bcdfghjklmnpqrstvwxyz]{5,}", local_part, re.IGNORECASE):
