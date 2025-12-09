@@ -110,9 +110,11 @@ async def filter_email(data: EmailInput):
         new_domain_task = cached_domain_age(domain)
 
         # Sync checks
-        disposable = is_disposable(domain)
-        blacklisted = is_blacklisted(domain)
-        whitelisted = is_whitelisted(domain)
+        check_in_list = check_domain_in_lists([domain])[domain]
+        disposable = check_in_list["disposable"]
+        blacklisted = check_in_list["blacklisted"]
+        whitelisted = check_in_list["whitelisted"]
+
         spam_keywords = contains_spam_keywords(email)
         is_gibberish = check_gibberish(domain)
 
