@@ -117,7 +117,7 @@ async def filter_email(data: EmailInput):
         spam_keywords = contains_spam_keywords(email)
 
         # Gather results concurrently
-        mx_exists, is_gibberish, smtp_valid, new_domain = await asyncio.gather(
+        mx_exists, is_gibberish, smtp_valid, (new_domain, domain_age_in_days) = await asyncio.gather(
             mx_task, gibberish_task, smtp_task, new_domain_task
         )
 
@@ -159,6 +159,7 @@ async def filter_email(data: EmailInput):
             "gibberish": is_gibberish,
             "smtp_valid": smtp_valid,
             "new_domain": new_domain,
+            "domain_age_in_days": domain_age_in_days,
             "spam_keywords": spam_keywords,
             "reputation_penalty": rep_penalty,
             "score": score,
