@@ -48,32 +48,80 @@
   </header>
 
 
-
-<div class="bg-gray-50 relative overflow-hidden bg-white isolate">
+<div x-data="emailChecker()" class="bg-gray-50 relative overflow-hidden bg-white isolate">
   <div class="px-6 py-24 sm:px-6 sm:py-32 lg:px-8">
     <div class="max-w-2xl mx-auto text-center">
-      <div class="inline-block px-4 py-1 mb-2 text-xs font-medium rounded-full bg-gray-100">Self-Hosted UserCheck Alternative</div>
-      <h2 class="text-4xl font-semibold tracking-tight text-gray-900 text-balance sm:text-5xl"> Email Validation API</h2>
-      <p class="max-w-lg mx-auto mt-6 text-xl text-gray-700 text-pretty">Verify and filter email addresses with one API call. ✌️</p>
-    <div>    
-    <p class="mt-4 text-sm text-gray-500">Perform syntax validation, domain checks, and MX/server-level verification - all without exposing your data to any third-party APIs.</p>
+      <div class="inline-block px-4 py-1 mb-2 text-xs font-medium rounded-full bg-gray-100">Docker based</div>
+      <h2 class="text-4xl font-semibold tracking-tight text-gray-900 text-balance sm:text-5xl">
+        Email Validation API
+      </h2>
+
+      <p class="max-w-lg mx-auto mt-6 text-xl text-gray-700 text-pretty">
+        Verify and filter email addresses with one API call. ✌️
+      </p>
+
+      <p class="mt-4 text-sm text-gray-500">
+        Perform syntax validation, domain checks, and MX/server-level verification - all without exposing your data to any third-party APIs.
+      </p>
+
       <div class="max-w-2xl mx-auto mt-8">
-        <form action="http://emailfilter-api.pejcic.rs:8080/" method="POST">
-            <label for="email" class="sr-only">Email address</label>
-            <div class="flex mt-2 rounded-md shadow-sm">
-                <div class="relative flex items-stretch flex-grow focus-within:z-10">
-                    <input type="text" name="input" id="input" class="block w-full px-4 py-4 text-gray-900 border-0 rounded-none rounded-l-md ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6" value="" required="" placeholder="Enter an email address to test" style="padding-right: 44.2667px !important;" data-protonpass-base-css="{&quot;padding-right&quot;:&quot;&quot;}">
-                </div>
-                <button type="submit" class="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-6 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                    Check
-                </button>
+        <form @submit.prevent="submitForm">
+          <label for="email" class="sr-only">Email address</label>
+
+          <div class="flex mt-2 rounded-md shadow-sm">
+            <div class="relative flex items-stretch flex-grow focus-within:z-10">
+              <input
+                type="text"
+                x-model="input"
+                name="input"
+                id="input"
+                class="block w-full px-4 py-4 text-gray-900 border-0 rounded-none rounded-l-md ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6"
+                placeholder="Enter an email address to test"
+                required
+              >
             </div>
+
+            <button type="submit"
+              class="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-6 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+              Check
+            </button>
+          </div>
         </form>
       </div>
+
+      <pre id="response" class="mt-6 text-left bg-black text-green-400 p-4 rounded"
+           x-text="response"></pre>
+
     </div>
-   </div>
-   </div>
+  </div>
 </div>
+
+<script>
+function emailChecker() {
+  return {
+    input: "",
+    response: "",
+
+    async submitForm() {
+      this.response = "Checking...";
+
+      try {
+        const res = await fetch("http://emailfilter-api.pejcic.rs:8080/", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams({ input: this.input })
+        });
+
+        const text = await res.text();
+        this.response = text;
+      } catch (e) {
+        this.response = "Error: " + e.message;
+      }
+    }
+  };
+}
+</script>
+
 
 
 
