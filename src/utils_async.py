@@ -8,6 +8,7 @@ from concurrent.futures import ThreadPoolExecutor
 import whois
 from src.constants import *
 from async_lru import alru_cache
+import time
 
 resolver = aiodns.DNSResolver()
 executor = ThreadPoolExecutor()
@@ -22,7 +23,7 @@ from src.logger_config import get_logger
 logger = get_logger(__name__)
 
 _cached_lists = {}
-
+_MX_CACHE = {}
 
 def get_domain_set(list_name: str) -> set:
     """
@@ -44,22 +45,18 @@ def check_gibberish(email: str) -> bool:
 
 async def mx_and_smtp_check(email: str):
     domain = email.split('@')[1]
-    mx_records = None
-
-    try:
-        answer = await resolve(domain, 'MX')
-        mx_records = [r.exchange.to_text() for r in answer]
-        mx_found = True
-    except Exception as e:
-        logger.warning(f"No MX record found for domain {domain}: {e}")
-        return False, None, False  # cannot continue without MX
+    mx_records = await cached_mx_lookup(domain)
+    if not mx_records:
+        return False, None, False
 
     try:
         mx_host = mx_records[0]
         smtp = aiosmtplib.SMTP(hostname=mx_host, timeout=1)
+
         await smtp.connect()
         await smtp.helo()
         await smtp.mail("noreply@emailfilter.pejcic.rs")
+
         code, _ = await smtp.rcpt(email)
         await smtp.quit()
 
@@ -67,7 +64,30 @@ async def mx_and_smtp_check(email: str):
     except Exception:
         smtp_valid = False
 
+    return True, mx_records, smtp_valid
+
+
     return mx_found, mx_records, smtp_valid
+
+
+
+# cache MX
+async def cached_mx_lookup(domain: str):
+    now = time.time()
+
+    if domain in _MX_CACHE:
+        ts, mx_records = _MX_CACHE[domain]
+        if now - ts < 3600 :  # 1h - todo: read from .env
+            return mx_records
+
+    try:
+        answer = await resolve(domain, "MX")
+        mx_records = [r.exchange.to_text() for r in answer]
+    except Exception:
+        mx_records = None
+
+    _MX_CACHE[domain] = (now, mx_records)
+    return mx_records
 
 
 # cache domain
