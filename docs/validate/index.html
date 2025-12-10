@@ -193,10 +193,11 @@ function emailChecker() {
         const data = await res.json();
         this.response = JSON.stringify(data, null, 2);
 
-        this.$nextTick(() => { // highlight!
-          document.querySelectorAll('pre code').forEach((el) => hljs.highlightElement(el));
+        this.$nextTick(() => {
+          const codeBlock = this.$el.querySelector('pre code');
+          hljs.highlightElement(codeBlock);
         });
-        
+
         this.logRequest(); // +1
       } catch (e) {
         this.response = "Error: " + e.message;
