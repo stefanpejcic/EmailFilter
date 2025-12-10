@@ -77,84 +77,72 @@
       </div>
 
       <!-- Hero Visual / Notifications -->
-      <div class="relative mt-10 sm:mt-20 lg:col-span-5 lg:row-span-2 lg:mt-0 xl:col-span-6">
-        <!-- Decorative SVGs -->
+      <div class="hidden sm:inline relative mt-10 sm:mt-20 lg:col-span-5 lg:row-span-2 lg:mt-0 xl:col-span-6">
+        <!-- BG SVG -->
         <div class="absolute left-1/2 top-4 h-[1026px] w-[1026px]">
-<svg class="grid-svg" xmlns="http://www.w3.org/2000/svg" width="982" height="786" viewBox="0 0 982 786" fill="none">
-    <path fill-rule="evenodd" clip-rule="evenodd" d="M490 401V537H348.5V401H490ZM490 785.5V676H348.5V785.5H347.5V676H206V785.5H205V676H63.5V785.5H62.5V676H0V675H62.5V538H0V537H62.5V401H0V400H62.5V258H0V257H62.5V116H0V115H62.5V0H63.5V115L205 115V0H206V115L347.5 115V0H348.5V115H490V0H491V115L627.5 115V0H628.5V115H765V0H766V115L902.5 115V0H903.5V115H982V116H903.5V257H982V258H903.5V400H982V401H903.5V537H982V538H903.5V675H982V676H903.5V785.5H902.5V676H766V785.5H765V676H628.5V785.5H627.5V676H491V785.5H490ZM902.5 675V538H766V675H902.5ZM902.5 537V401H766V537H902.5ZM902.5 400V258H766V400H902.5ZM902.5 257V116L766 116V257H902.5ZM627.5 675H491V538H627.5V675ZM765 675H628.5V538H765V675ZM348.5 675H490V538H348.5V675ZM347.5 538V675H206V538H347.5ZM205 538V675H63.5V538H205ZM765 537V401H628.5V537H765ZM765 400V258H628.5V400H765ZM765 257V116H628.5V257H765ZM347.5 401V537H206V401H347.5ZM205 401V537H63.5V401H205ZM627.5 401V537H491V401H627.5ZM627.5 116L491 116V257H627.5V116ZM627.5 258H491V400H627.5V258ZM63.5 257V116L205 116V257H63.5ZM63.5 400V258H205V400H63.5ZM206 116V257H347.5V116L206 116ZM348.5 116V257H490V116H348.5ZM206 400V258H347.5V400H206ZM348.5 258V400H490V258H348.5Z" fill="url(#paint0_radial_1_8)"></path>
-    <defs>
-      <radialGradient id="paint0_radial_1_8" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(491 392.75) rotate(90) scale(513.25 679.989)">
-        <stop stop-color="white" stop-opacity="0.2"></stop>
-        <stop offset="1" stop-color="#000" stop-opacity="0"></stop>
-      </radialGradient>
-    </defs>
-  </svg>
+          <svg class="grid-svg" xmlns="http://www.w3.org/2000/svg" width="982" height="786" viewBox="0 0 982 786" fill="none"> <path fill-rule="evenodd" clip-rule="evenodd" d="M490 401V537H348.5V401H490ZM490 785.5V676H348.5V785.5H347.5V676H206V785.5H205V676H63.5V785.5H62.5V676H0V675H62.5V538H0V537H62.5V401H0V400H62.5V258H0V257H62.5V116H0V115H62.5V0H63.5V115L205 115V0H206V115L347.5 115V0H348.5V115H490V0H491V115L627.5 115V0H628.5V115H765V0H766V115L902.5 115V0H903.5V115H982V116H903.5V257H982V258H903.5V400H982V401H903.5V537H982V538H903.5V675H982V676H903.5V785.5H902.5V676H766V785.5H765V676H628.5V785.5H627.5V676H491V785.5H490ZM902.5 675V538H766V675H902.5ZM902.5 537V401H766V537H902.5ZM902.5 400V258H766V400H902.5ZM902.5 257V116L766 116V257H902.5ZM627.5 675H491V538H627.5V675ZM765 675H628.5V538H765V675ZM348.5 675H490V538H348.5V675ZM347.5 538V675H206V538H347.5ZM205 538V675H63.5V538H205ZM765 537V401H628.5V537H765ZM765 400V258H628.5V400H765ZM765 257V116H628.5V257H765ZM347.5 401V537H206V401H347.5ZM205 401V537H63.5V401H205ZM627.5 401V537H491V401H627.5ZM627.5 116L491 116V257H627.5V116ZM627.5 258H491V400H627.5V258ZM63.5 257V116L205 116V257H63.5ZM63.5 400V258H205V400H63.5ZM206 116V257H347.5V116L206 116ZM348.5 116V257H490V116H348.5ZM206 400V258H347.5V400H206ZM348.5 258V400H490V258H348.5Z" fill="url(#paint0_radial_1_8)"></path> <defs> <radialGradient id="paint0_radial_1_8" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(491 392.75) rotate(90) scale(513.25 679.989)"> <stop stop-color="white" stop-opacity="0.2"></stop> <stop offset="1" stop-color="#000" stop-opacity="0"></stop> </radialGradient> </defs> </svg>
         </div>
-
-
-
-
-
-
-      <div
-        x-data="{
-          notifications: [
-            { message: 'jbezos@amazon.com <span class=\'font-medium\'>just signed up</span>', type: 'success', visible: false },
-            { message: 'john.doe@yopmail.com <span class=\'font-medium\'>was blocked</span>', type: 'error', visible: false },
-            { message: 'tcook@apple.com <span class=\'font-medium\'>just signed up</span>', type: 'success', visible: false },
-            { message: 'viagrashop@shopify.com <span class=\'font-medium\'>was blocked</span>', type: 'error', visible: false },
-            { message: 'stefan@pejcic.rs <span class=\'font-medium\'>just signed up</span>', type: 'success', visible: false }
-          ],
-          showStaggered() {
-            this.notifications.forEach((n, i) => {
-              setTimeout(() => n.visible = true, i * 800);
-            });
-          }
-        }"
-        x-init="showStaggered()"
-        class="relative flex lg:pt-6 items-start justify-center h-full"
-      >
-        <div class="grid w-full gap-4 mx-auto sm:max-w-sm">
-
-          <template x-for="(notification, index) in notifications" :key="index">
-            <div
-              x-show="notification.visible"
-              x-transition:enter="transition ease-out duration-300"
-              x-transition:enter-start="opacity-0 transform translate-y-4"
-              x-transition:enter-end="opacity-100 transform translate-y-0"
-              x-transition:leave="transition ease-in duration-300"
-              x-transition:leave-start="opacity-100 transform translate-y-0"
-              x-transition:leave-end="opacity-0 transform translate-y-4"
-              class="flex items-center justify-between gap-2 py-1 pl-1 pr-8 rounded-full"
-              :class="notification.type === 'error' ? 'bg-red-50' : 'bg-green-50'">
-
+        
+        <!-- Notifications -->
+        <div
+          x-data="{
+            notifications: [
+              { message: 'jbezos@amazon.com <span class=\'font-medium\'>just signed up</span>', type: 'success', visible: false },
+              { message: 'john.doe@yopmail.com <span class=\'font-medium\'>was blocked</span>', type: 'error', visible: false },
+              { message: 'tcook@apple.com <span class=\'font-medium\'>just signed up</span>', type: 'success', visible: false },
+              { message: 'viagrashop@shopify.com <span class=\'font-medium\'>was blocked</span>', type: 'error', visible: false },
+              { message: 'stefan@pejcic.rs <span class=\'font-medium\'>just signed up</span>', type: 'success', visible: false }
+            ],
+            showStaggered() {
+              this.notifications.forEach((n, i) => {
+                setTimeout(() => n.visible = true, i * 800);
+              });
+            }
+          }"
+          x-init="showStaggered()"
+          class="relative flex lg:pt-6 items-start justify-center h-full"
+        >
+          <div class="grid w-full gap-4 mx-auto sm:max-w-sm">
+  
+            <template x-for="(notification, index) in notifications" :key="index">
               <div
-                class="flex items-center justify-center w-8 h-8 p-1.5 rounded-full"
-                :class="notification.type === 'error' ? 'bg-red-100' : 'bg-green-100'">
-
-                <!-- Error icon -->
-                <svg x-show="notification.type === 'error'" class="w-full h-full text-red-600" fill="currentColor" viewBox="0 0 24 24">
-                  <path fill-rule="evenodd"
-                        d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z"
-                        clip-rule="evenodd"></path>
-                </svg>
-
-                <!-- Success icon -->
-                <svg x-show="notification.type === 'success'" class="w-full h-full text-green-600" fill="currentColor" viewBox="0 0 24 24">
-                  <path fill-rule="evenodd"
-                        d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z"
-                        clip-rule="evenodd"></path>
-                </svg>
-
+                x-show="notification.visible"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 transform translate-y-4"
+                x-transition:enter-end="opacity-100 transform translate-y-0"
+                x-transition:leave="transition ease-in duration-300"
+                x-transition:leave-start="opacity-100 transform translate-y-0"
+                x-transition:leave-end="opacity-0 transform translate-y-4"
+                class="flex items-center justify-between gap-2 py-1 pl-1 pr-8 rounded-full"
+                :class="notification.type === 'error' ? 'bg-red-50' : 'bg-green-50'">
+  
+                <div
+                  class="flex items-center justify-center w-8 h-8 p-1.5 rounded-full"
+                  :class="notification.type === 'error' ? 'bg-red-100' : 'bg-green-100'">
+  
+                  <!-- Error icon -->
+                  <svg x-show="notification.type === 'error'" class="w-full h-full text-red-600" fill="currentColor" viewBox="0 0 24 24">
+                    <path fill-rule="evenodd"
+                          d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z"
+                          clip-rule="evenodd"></path>
+                  </svg>
+  
+                  <!-- Success icon -->
+                  <svg x-show="notification.type === 'success'" class="w-full h-full text-green-600" fill="currentColor" viewBox="0 0 24 24">
+                    <path fill-rule="evenodd"
+                          d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z"
+                          clip-rule="evenodd"></path>
+                  </svg>
+  
+                </div>
+  
+                <span x-html="notification.message"
+                      :class="notification.type === 'error' ? 'text-red-900' : 'text-green-900'"></span>
               </div>
-
-              <span x-html="notification.message"
-                    :class="notification.type === 'error' ? 'text-red-900' : 'text-green-900'"></span>
-            </div>
-          </template>
-
+            </template>
+  
+          </div>
         </div>
-      </div>
 
 
     </div>
