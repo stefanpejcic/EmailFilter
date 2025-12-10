@@ -95,6 +95,10 @@
             </button>
           </div>
         </form>
+
+        <div x-show="error" class="mt-4 text-red-600 text-sm">
+          <span x-text="error"></span>
+        </div>        
       </div>
 
       <pre 
@@ -113,7 +117,7 @@
   </div>
 </div>
 
-<script>
+  <script>
 function emailChecker() {
   return {
     input: "",
@@ -121,7 +125,42 @@ function emailChecker() {
     loading: false,
     responseTime: null,
 
+    limit: 10, // demo
+    windowMs: 60 * 60 * 1000, // 1h
+    error: null,
+
+    init() {
+      if (!localStorage.getItem("emailfilter_requests")) {
+        localStorage.setItem("emailfilter_requests", JSON.stringify([]));
+      }
+    },
+
+    canUse() {
+      const now = Date.now();
+      let logs = JSON.parse(localStorage.getItem("emailfilter_requests"));
+      logs = logs.filter(t => now - t < this.windowMs);
+      localStorage.setItem("emailfilter_requests", JSON.stringify(logs));
+      if (logs.length >= this.limit) {
+        const nextAllowed = this.windowMs - (now - logs[0]);
+        const minutes = Math.ceil(nextAllowed / 60000);
+
+        this.error = `Hold on partner! This demo is intended for testing only - you have reached the limit of (${limit} req/hour). Try again in ~${minutes} min.`;
+        return false;
+      }
+
+      this.error = null;
+      return true;
+    },
+
+    logRequest() {
+      const logs = JSON.parse(localStorage.getItem("emailfilter_requests"));
+      logs.push(Date.now());
+      localStorage.setItem("emailfilter_requests", JSON.stringify(logs));
+    },
+
     async submitForm() {
+      if (!this.canUse()) return;
+
       this.loading = true;
       this.response = "Checking...";
       this.responseTime = null;
@@ -131,20 +170,19 @@ function emailChecker() {
       try {
         const res = await fetch("https://emailfilter-api.pejcic.rs/filter-email", {
           method: "POST",
-          headers: { 
-            "Content-Type": "application/json"
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email: this.input })
         });
 
         const data = await res.json();
-        this.response = JSON.stringify(data, null, 2); // Pretty-print JSON
+        this.response = JSON.stringify(data, null, 2);
+
+        this.logRequest(); // +1
       } catch (e) {
         this.response = "Error: " + e.message;
       } finally {
         this.loading = false;
-        const end = performance.now();
-        this.responseTime = Math.round(end - start);
+        this.responseTime = Math.round(performance.now() - start);
       }
     }
   };
