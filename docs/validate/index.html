@@ -49,9 +49,7 @@
       </div>
   </header>
 
-<main class="flex-grow mt-[72px]">
-
-<div x-data="emailChecker()" class="bg-gray-50 relative overflow-hidden bg-white isolate">
+<div x-data="emailChecker()" class="flex-grow mt-[72px] bg-gray-50 relative overflow-hidden bg-white isolate">
   <div class="px-6 py-24 sm:px-6 sm:py-32 lg:px-8">
     <div class="max-w-2xl mx-auto text-center">
       <div class="inline-block px-4 py-1 mb-2 text-xs font-medium rounded-full bg-gray-100">Docker based</div>
@@ -115,6 +113,25 @@
     </div>
   </div>
 </div>
+
+  
+<footer class="bg-neutral-primary-soft rounded shadow-xs border border-default m-4">
+    <div class="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
+      <span class="text-sm text-body sm:text-center"><a href="https://github.com/stefanpejcic/EmailFilter" class="hover:underline" target="_blank">pejcic.rs</a></span>
+    <ul class="flex flex-wrap items-center mt-3 text-sm font-medium text-body sm:mt-0">
+        <li>
+            <a href="https://pejcic.rs" target="_blank" class="hover:underline me-4 md:me-6">About</a>
+        </li>
+        <li>
+            <a href="https://github.com/stefanpejcic/EmailFilter" target="_blank" class="hover:underline me-4 md:me-6">Github</a>
+        </li>
+        <li>
+            <a href="https://pejcic.rs" target="_blank" class="hover:underline me-4 md:me-6">Contact</a>
+        </li>
+    </ul>
+    </div>
+</footer>
+
 
   <script>
 function emailChecker() {
@@ -191,25 +208,7 @@ function emailChecker() {
   };
 }
 </script>
-
-</div>
   
-<footer class="bg-neutral-primary-soft rounded shadow-xs border border-default m-4">
-    <div class="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
-      <span class="text-sm text-body sm:text-center"><a href="https://github.com/stefanpejcic/EmailFilter" class="hover:underline" target="_blank">pejcic.rs</a></span>
-    <ul class="flex flex-wrap items-center mt-3 text-sm font-medium text-body sm:mt-0">
-        <li>
-            <a href="https://pejcic.rs" target="_blank" class="hover:underline me-4 md:me-6">About</a>
-        </li>
-        <li>
-            <a href="https://github.com/stefanpejcic/EmailFilter" target="_blank" class="hover:underline me-4 md:me-6">Github</a>
-        </li>
-        <li>
-            <a href="https://pejcic.rs" target="_blank" class="hover:underline me-4 md:me-6">Contact</a>
-        </li>
-    </ul>
-    </div>
-</footer>
   
 
 </body>
