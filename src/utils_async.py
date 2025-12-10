@@ -42,30 +42,32 @@ def check_gibberish(email: str) -> bool:
         return True
     return False
 
-async def check_mx(domain: str) -> bool:
-    logger.debug(f"Checking MX records for domain: {domain}")
+async def mx_and_smtp_check(email: str):
+    domain = email.split('@')[1]
+    mx_records = None
+
     try:
-        await resolver.query(domain, 'MX')
-        logger.debug(f"MX record found for domain: {domain}")
-        return True
+        answer = await resolve(domain, 'MX')
+        mx_records = [r.exchange.to_text() for r in answer]
+        mx_found = True
     except Exception as e:
         logger.warning(f"No MX record found for domain {domain}: {e}")
-        return False
+        return False, None, False  # cannot continue without MX
 
-async def smtp_check(email: str) -> bool:
-    domain = email.split('@')[1]
     try:
-        mx_records = await resolver.query(domain, 'MX')
-        mx_host = str(mx_records[0].host)
-        smtp = aiosmtplib.SMTP(hostname=mx_host, timeout=2)
+        mx_host = mx_records[0]
+        smtp = aiosmtplib.SMTP(hostname=mx_host, timeout=1)
         await smtp.connect()
         await smtp.helo()
-        await smtp.mail("noreply@yourapi.com")
+        await smtp.mail("noreply@emailfilter.pejcic.rs")
         code, _ = await smtp.rcpt(email)
         await smtp.quit()
-        return code == 250
+
+        smtp_valid = code == 250
     except Exception:
-        return False
+        smtp_valid = False
+
+    return mx_found, mx_records, smtp_valid
 
 
 # cache domain
