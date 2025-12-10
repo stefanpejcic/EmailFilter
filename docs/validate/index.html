@@ -160,7 +160,7 @@ function emailChecker() {
         const nextAllowed = this.windowMs - (now - logs[0]);
         const minutes = Math.ceil(nextAllowed / 60000);
 
-        this.error = `Hold on partner! This demo is intended for testing only - you have reached the limit of (${limit} req/hour). Try again in ~${minutes} min.`;
+        this.error = `Hold on partner! This demo is intended for testing only - you have reached the limit of (${this.limit} req/hour). Try again in ~${minutes} min.`;
         return false;
       }
 
