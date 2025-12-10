@@ -51,7 +51,7 @@ async def mx_and_smtp_check(email: str):
 
     try:
         mx_host = mx_records[0]
-        smtp = aiosmtplib.SMTP(hostname=mx_host, timeout=1)
+        smtp = aiosmtplib.SMTP(hostname=mx_host, timeout=2)
 
         await smtp.connect()
         await smtp.helo()
@@ -65,9 +65,6 @@ async def mx_and_smtp_check(email: str):
         smtp_valid = False
 
     return True, mx_records, smtp_valid
-
-
-    return mx_found, mx_records, smtp_valid
 
 
 
