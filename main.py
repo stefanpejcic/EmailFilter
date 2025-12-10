@@ -144,12 +144,10 @@ async def filter_email(data: EmailInput):
         spam_keywords = contains_spam_keywords(email)
         is_gibberish = check_gibberish(domain)
 
-      
         # run all at once
-        mx_task = check_mx(domain)
-        smtp_task = smtp_check(email)
-        new_domain_task = cached_domain_age(domain)
-        mx_exists, smtp_valid, (new_domain, domain_age_in_days) = await asyncio.gather(mx_task, smtp_task, new_domain_task)
+        check_mx_and_smtp = mx_and_smtp_check(email)
+        check_domain_whois = cached_domain_age(domain)
+        (mx_exists, mx_record, smtp_valid), (new_domain, domain_age_in_days) = await asyncio.gather(check_mx_and_smtp, check_domain_whois)
 
         log_domain_check(domain) #todo: make optional for prod
         rep_penalty = get_reputation_penalty(domain)
@@ -184,6 +182,7 @@ async def filter_email(data: EmailInput):
             "blacklisted": blacklisted,
             "whitelisted": whitelisted,
             "mx_exists": mx_exists,
+            "mx_records": mx_record,
             "gibberish": is_gibberish,
             "smtp_valid": smtp_valid,
             "new_domain": new_domain,
