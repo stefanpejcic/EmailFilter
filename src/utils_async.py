@@ -77,17 +77,17 @@ async def cached_mx_lookup(domain: str):
 
     if domain in _MX_CACHE:
         ts, mx_records = _MX_CACHE[domain]
-        if now - ts < 3600 :  # 1h - todo: read from .env
+        if mx_records and now - ts < 3600:
             return mx_records
 
     try:
-        answer = await resolve(domain, "MX")
-        mx_records = [r.exchange.to_text() for r in answer]
+        answer = await resolver.query(domain, 'MX')
+        mx_records = [r.host for r in answer]
+        _MX_CACHE[domain] = (now, mx_records)
+        return mx_records
     except Exception:
-        mx_records = None
-
-    _MX_CACHE[domain] = (now, mx_records)
-    return mx_records
+        logger.warning(f"MX lookup failed for {domain}")
+        return None
 
 
 # cache domain
