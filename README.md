@@ -121,6 +121,16 @@ curl -X POST http://localhost:8000/scores/default
 wget -O lists/disposable_domains.txt https://disposable.github.io/disposable-email-domains/domains.txt
 ```
 
+- Display all available endpoints:
+```
+curl http://localhost:8000/
+```
+
+- Display help information for endpoints:
+```
+curl http://localhost:8000/help/<endpoint>
+```
+
 # Use-cases:
 Below you can find examples on how to setup Exim or Proxmox to use the emailfilter:
 
