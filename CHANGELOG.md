@@ -1,4 +1,7 @@
 
+## 26.12.2025
+- added `/` to dynamically show all available endpoints and `/help/<endpoint>` to show detailed usage.
+
 ## 10.12.2025
 - 'mx_records' is now passed back in the results.
 - added caching for MX records and WHOIS.
