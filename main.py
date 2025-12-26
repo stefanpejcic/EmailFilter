@@ -2,7 +2,7 @@
 # Author: Stefan Pejcic <stefan@pejcic.rs>
 # Project: https://github.com/stefanpejcic/emailfilter/
 # Created: 14.07.2025
-# Last Modified: 03.12.2025
+# Last Modified: 26.12.2025
 # Copyright (c) 2025 Stefan Pejcic
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,7 +25,8 @@
 ################################################################################
 
 import json
-from fastapi import FastAPI, HTTPException, Query, Path, Body
+from fastapi import FastAPI, HTTPException, Query, Path, Body, Path
+from fastapi.routing import APIRoute
 from src.models import EmailInput, FeedbackInput
 from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 from src.database import *
@@ -53,7 +54,7 @@ BANNER = r"""
      |  __/ | | | | | (_| | | | | | | | ||  __/ |   
       \___|_| |_| |_|\__,_|_|_|_| |_|_|\__\___|_|   
                                                 
-                Email Filter API started!
+                 EmailFilter API started!
 ---------------------------------------------------------
 """
 
@@ -92,20 +93,6 @@ def load_scores(config_path: PathLib = CONFIG_SCORES_PATH) -> dict:
 SCORES = load_scores()
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def invalidate_cache(list_name: str):
     """
     Remove a list from the cache to force reload on next access.
@@ -126,10 +113,14 @@ def invalidate_cache(list_name: str):
 
 
 # ---------------------- API ENDPOINTS ---------------------- #
-# https://github.com/stefanpejcic/EmailFilter/blob/main/README.md#api-usage
+# https://github.com/stefanpejcic/EmailFilter/blob/main/README.md#api-usage OR send GET to /
 
 @app.post("/filter-email")
 async def filter_email(data: EmailInput):
+    """
+    Checks an email against multiple rules (disposable, blacklisted, MX/SMTP, gibberish, spam keywords)
+    and returns a score and verdict.
+    """
     email = data.email
     domain = email.split("@")[1].lower()
     logger.info(f"Checking address: {email}")
@@ -199,14 +190,20 @@ async def filter_email(data: EmailInput):
 
 @app.post("/feedback/spam")
 async def report_spam(data: FeedbackInput):
+    """
+    Mark a domain as spam.
+    """  
     domain = data.email.split("@")[1].lower()
     logger.debug(f"Marking domain as spam: {domain}")
     mark_domain_as_spam(domain)
-    return {"message": f"Domain {domain} marked as spam. Thank you!"}
+    return {"message": f"Domain {domain} marked as spam. Thank you for reporting!"}
 
 
 @app.post("/whitelist")
 def add_whitelist(domain: str = Query(...)):
+    """
+    Add a domain to whitelist.
+    """
     domain = domain.lower()
     logger.debug(f"Adding domain to whitelist: {domain}")
     if domain in load_list("whitelist"):
@@ -223,6 +220,9 @@ def add_whitelist(domain: str = Query(...)):
 
 @app.delete("/whitelist")
 def delete_whitelist(domain: str = Query(...)):
+    """
+    Delete a domain from whitelist.
+    """  
     domain = domain.lower()
     logger.debug(f"Removing domain from whitelist: {domain}")
     if domain not in load_list("whitelist"):
@@ -236,6 +236,9 @@ def delete_whitelist(domain: str = Query(...)):
 
 @app.post("/blacklist")
 def add_blacklist(domain: str = Query(...)):
+    """
+    Add a domain to blacklist.
+    """  
     domain = domain.lower()
     logger.debug(f"Adding domain to blacklist: {domain}")
     if domain in load_list("blacklist"):
@@ -252,6 +255,9 @@ def add_blacklist(domain: str = Query(...)):
 
 @app.delete("/blacklist")
 def delete_blacklist(domain: str = Query(...)):
+    """
+    Remove a domain from blacklist.
+    """  
     domain = domain.lower()
     logger.debug(f"Removing domain from blacklist: {domain}")
     if domain not in load_list("blacklist"):
@@ -265,6 +271,9 @@ def delete_blacklist(domain: str = Query(...)):
 
 @app.get("/lists/{list_name}")
 def get_list(list_name: str = Path(..., description="Name of the list to retrieve")):
+    """
+    Get domains from a specific list.
+    """  
     list_name = list_name.lower()
     logger.debug(f"Fetching list: {list_name}")
     if list_name not in LIST_FILES:
@@ -284,6 +293,9 @@ def get_list(list_name: str = Path(..., description="Name of the list to retriev
 
 @app.get("/lists")
 def get_all_lists():
+    """
+    Get all available lists.
+    """  
     logger.debug("Fetching all lists")
     result = {}
     for name in LIST_FILES:
@@ -297,6 +309,9 @@ def get_all_lists():
 
 @app.delete("/lists/{list_name}")
 def clear_list(list_name: str):
+    """
+    Delete all domains from a list.
+    """  
     logger.debug(f"Clearing list: {list_name}")
     if list_name not in LIST_FILES:
         logger.warning(f"List not found for clearing: {list_name}")
@@ -312,7 +327,7 @@ def clear_list(list_name: str):
 @app.get("/scores")
 def get_scores():
     """
-    Get the current scoring weights (defaults + user overrides).
+    Get the current scoring weights.
     """
     return {"scores": SCORES, "note": "To update scores POST new values to /scores and restart the application."}
 
@@ -320,11 +335,9 @@ def get_scores():
 @app.post("/scores")
 def update_scores(new_scores: dict = Body(..., example=DEFAULT_SCORES)):
     """
-    Update the scoring weights by writing to config/scores.json.
-    App restart is required to apply changes.
+    Update the scoring weights - app restart is required to apply changes.
     """
     try:
-        # only allow keys from DEFAULT_SCORES
         for key in new_scores.keys():
             if key not in DEFAULT_SCORES:
                 raise HTTPException(status_code=400, detail=f"Invalid score key: {key}")
@@ -346,8 +359,7 @@ def update_scores(new_scores: dict = Body(..., example=DEFAULT_SCORES)):
 @app.post("/scores/default")
 def restore_default_scores():
     """
-    Restore the scoring weights to the default values by overwriting config/scores.json.
-    Application restart is required to apply changes.
+    Restore the scoring weights to the default values - app restart is required to apply changes.
     """
     try:
         CONFIG_SCORES_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -363,3 +375,52 @@ def restore_default_scores():
     except Exception as e:
         logger.error(f"Failed to restore default scores: {e}")
         raise HTTPException(status_code=500, detail="Failed to restore default scores.")
+
+
+
+# ---------------------- OPTIONAL ENDPOINTS ---------------------- #
+
+@app.get("/")
+def root():
+    """
+    Lists all available API endpoints with basic info.
+    """
+    routes_info = {}
+    for route in app.routes:
+        if isinstance(route, APIRoute):
+            path = route.path
+            methods = list(route.methods)
+            description = route.description or route.endpoint.__doc__ or "No description available"
+            description = " ".join(description.split())
+            
+            routes_info[path] = {
+                "methods": methods,
+                "description": description,
+                "help_url": f"/help{path}"
+            }
+    return {
+        "message": "Welcome to the EmailFilter API",
+        "available_endpoints": routes_info
+    }
+
+
+@app.get("/help/{route_path:path}")
+def route_help(route_path: str = Path(..., description="The path of the route you want help for")):
+    """
+    Returns detailed help for a specific API route.
+    """
+    route_path = "/" + route_path.strip("/")
+    
+    for route in app.routes:
+        if isinstance(route, APIRoute) and route.path == route_path:
+            info = {
+                "path": route.path,
+                "methods": list(route.methods),
+                "description": route.description or route.endpoint.__doc__ or "No description available",
+                "path_params": [param.name for param in route.dependant.path_params],
+                "query_params": [param.name for param in route.dependant.query_params],
+                "body_params": [param.name for param in route.dependant.body_params]
+            }
+            return info
+    
+    return {"error": "Route not found"}
