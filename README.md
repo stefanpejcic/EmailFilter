@@ -292,7 +292,7 @@ Check `/var/log/mail.log` or PMG logs for rejection messages.
 
 # Troubleshooting
 
-- `ERROR:utils_async:[WHOIS Exception] [Errno 111] Connection refused` means that outgoing connection via port `43` to whois servers is not working. Make sure TCP_OUT port `43` is opened on firewall, test using: `telnet whois.verisign-grs.com 43`
+- `domain_age_in_days` is empty or error `ERROR:utils_async:[WHOIS Exception] [Errno 111] Connection refused`: means that outgoing connection via port `43` to whois servers is not working. Make sure TCP_OUT port `43` is opened on firewall, test using: `telnet whois.verisign-grs.com 43`
 - `curl: (56) Recv failure: Connection reset by peer` - indicates that the port is unreachable - make sure it's opened on firewall.
 - `curl: (52) Empty reply from server`- indicates that the application did not start correctly - check the logs: `docker logs -f emailfilter`
 - *Public IPv4 address not visible in the logs!* - use a reverse proxy and pass the `X-Forwarded-For` header.
