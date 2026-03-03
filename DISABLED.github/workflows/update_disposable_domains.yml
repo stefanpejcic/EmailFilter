@@ -14,7 +14,7 @@ jobs:
 
       - name: Download latest disposable domains list
         run: |
-          wget -O lists/disposable_domains.txt https://disposable.github.io/disposable-email-domains/domains.txt
+          wget -O lists/disposable_domains.txt https://stefanpejcic.github.io/disposable-email-domains/domains.txt
 
       - name: Commit and push changes
         run: |
