@@ -146,7 +146,7 @@ async def filter_email(data: EmailInput):
         # Calculate score
         score = SCORES["base"]
         if is_gibberish:
-            score += SCORES["is_gibberish"]
+            score += SCORES["gibberish"]
         if mx_exists:
             score += SCORES["mx_exists"]
         if smtp_valid:
