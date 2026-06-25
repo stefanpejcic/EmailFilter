@@ -133,7 +133,7 @@ async def filter_email(data: EmailInput):
         blacklisted = check_in_list["blacklisted"]
         whitelisted = check_in_list["whitelisted"]
         spam_keywords = contains_spam_keywords(email)
-        is_gibberish = check_gibberish(domain)
+        is_gibberish = check_gibberish(email)
 
         # run all at once
         check_mx_and_smtp = mx_and_smtp_check(email)
